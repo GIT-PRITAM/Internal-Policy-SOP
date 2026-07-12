@@ -5,6 +5,11 @@ import { ChartCard } from '../../components/widgets/ChartCard'
 import { PolicyCard } from '../../components/widgets/PolicyCard'
 import { Badge } from '../../components/ui/Badge'
 import { Skeleton } from '../../components/ui/Skeleton'
+import {
+  SkeletonChartBlock,
+  SkeletonPolicyCardGrid,
+} from '../../components/skeletons/EnterpriseSkeletons'
+
 import { getEmployeeDashboard, type EmployeeDashboardResponse } from '../../services/dashboardApi'
 import { NotificationsPanel } from '../../components/sections/NotificationsPanel'
 
@@ -76,11 +81,19 @@ export default function EmployeeDashboardPage() {
         </section>
 
         <section className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {stats.map((stat) => (
-              <StatCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} delta={stat.delta} tone={stat.tone} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Skeleton className="h-40 w-full" />
+              <Skeleton className="h-40 w-full" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {stats.map((stat) => (
+                <StatCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} delta={stat.delta} tone={stat.tone} />
+              ))}
+            </div>
+          )}
+
 
           <div className="space-y-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
@@ -99,6 +112,7 @@ export default function EmployeeDashboardPage() {
                     <Skeleton className="h-20 w-full" />
                   </>
                 ) : pendingAcknowledgements.length === 0 ? (
+
                   <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">No pending acknowledgements.</div>
                 ) : (
                   pendingAcknowledgements.slice(0, 3).map((item) => (

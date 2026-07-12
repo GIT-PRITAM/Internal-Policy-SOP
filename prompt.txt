@@ -1,0 +1,171 @@
+1) Laravel Backend Architecture & Authentication
+
+Prompt:
+
+Generate a Laravel 12 REST API for an Internal Policy & SOP Management Platform. Use PostgreSQL as the database, 
+Laravel Sanctum for authentication, role-based authorization (Admin, HR, Employee), Form Request validation, API Resources, 
+service/repository pattern where appropriate, and RESTful JSON responses. Design the project so it is production-ready and 
+scalable.
+
+AI Response Summary:
+
+Generated Laravel project structure
+Configured Sanctum authentication
+Added authentication APIs
+Implemented middleware for roles
+Created API Resource classes
+Structured Controllers, Services and Repositories
+Standardized JSON API responses
+
+
+2) Database Schema & Migrations
+
+Prompt:
+
+Design a normalized PostgreSQL schema for an Internal Policy & SOP Management Platform. Create Laravel migrations and 
+Eloquent models for Users, Roles, Departments, Policy Documents, Policy Versions, Approvals, Notifications, Bookmarks and 
+Acknowledgements. Include proper foreign keys, indexes, nullable constraints, timestamps and relationships suitable for
+ enterprise applications.
+
+AI Response Summary:
+
+Generated migration files
+Created Eloquent models
+Added foreign key constraints
+Configured relationships
+Added policy version history
+Included approval workflow tables
+Created notification and acknowledgement schema
+
+
+3) Policy Lifecycle APIs
+
+Prompt:
+
+Build REST APIs for complete policy lifecycle management. Employees should be able to browse, search, bookmark and acknowledge
+ policies. Admins should be able to create policies, upload new versions, submit policies for review, approve or reject
+revisions and maintain version history. Use Laravel Form Requests for validation and API Resources for responses.
+
+AI Response Summary:
+
+CRUD APIs for policies
+Policy version management
+Bookmark APIs
+Acknowledgement APIs
+Approval workflow APIs
+Dashboard endpoints
+Notification APIs
+Search and filtering support
+
+
+4) React + Vite Frontend Scaffold
+
+Prompt:
+
+Create a modern React + TypeScript + Vite frontend using Tailwind CSS. Implement authentication context, protected routes,
+role-based navigation, reusable UI components, responsive layouts and dashboard pages for both Employee and Admin users. 
+Keep the architecture modular and maintainable.
+
+AI Response Summary:
+
+Created Vite React project
+Added React Router
+Authentication Context
+Protected Routes
+Role Guards
+Dashboard layouts
+Reusable UI components
+Tailwind configuration
+
+
+5) Enterprise Dashboard & User Experience
+
+Prompt:
+
+Design a modern enterprise dashboard with a clean glassmorphism-inspired UI while maintaining a professional corporate 
+appearance. Include statistics cards, recently updated policies, pending acknowledgements, notifications panel, version 
+history timeline, search functionality and responsive layouts. Optimize for desktop and tablet users.
+
+AI Response Summary:
+
+Admin Dashboard
+Employee Dashboard
+Statistics cards
+Notification panel
+Search UI
+Version History component
+Policy cards
+Empty states
+Skeleton loading
+Responsive layouts
+
+
+6) Dockerization & PostgreSQL Deployment
+
+Prompt:
+
+Dockerize the Laravel backend for deployment. Use PHP-FPM Alpine image, Composer installation, PostgreSQL PDO extension, 
+production dependency optimization, writable Laravel storage directories and an entrypoint script that automatically runs 
+database migrations before starting PHP-FPM.
+
+AI Response Summary:
+
+Dockerfile
+docker-entrypoint.sh
+Composer optimization
+PostgreSQL extension
+Storage permissions
+Automatic migrations
+Production container configuration
+
+
+7) Deployment Configuration
+
+Prompt:
+
+Prepare the application for production deployment using Neon PostgreSQL, Render for backend hosting and Vercel for frontend 
+hosting. Configure Laravel environment variables, PostgreSQL SSL connection, CORS, Sanctum stateful domains and production 
+environment settings while keeping sensitive credentials outside version control.
+
+AI Response Summary:
+
+Production environment variables
+Neon PostgreSQL configuration
+SSL database connection
+Render deployment configuration
+Vercel frontend configuration
+CORS configuration
+Sanctum production setup
+
+
+AI Correction Prompts
+
+Correction Prompt 1:
+
+Refactor all API responses into a consistent JSON structure using API Resource classes. Ensure pagination metadata and 
+validation errors follow Laravel best practices.
+
+Correction Prompt 2:
+
+Improve PostgreSQL compatibility by updating database configuration for Neon. Add SSL support, verify migration 
+compatibility and optimize connection settings for production deployment.
+
+Correction Prompt 3:
+
+Improve the React authentication flow. Preserve login state after page refresh, protect authenticated routes, redirect 
+unauthorized users correctly and centralize authentication using React Context.
+
+Correction Prompt 4:
+
+Refine the dashboard UI using reusable Tailwind components. Improve spacing, typography, loading skeletons, empty states and 
+responsive behavior while keeping the existing functionality unchanged.
+
+Correction Prompt 5:
+
+Improve policy search performance by adding server-side filtering, department filtering, version filtering and pagination. 
+Optimize the Laravel query builder to reduce unnecessary database queries.
+
+Correction Prompt 6:
+
+Improve the Docker configuration for production. Optimize Composer installation, reduce image size, improve build caching
+and ensure the container automatically executes Laravel migrations before serving requests.

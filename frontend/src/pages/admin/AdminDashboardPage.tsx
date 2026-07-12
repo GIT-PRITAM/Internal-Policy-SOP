@@ -5,6 +5,11 @@ import AppLayout from '../../layouts/AppLayout'
 import { StatCard } from '../../components/widgets/StatCard'
 import { ChartCard } from '../../components/widgets/ChartCard'
 import { Skeleton } from '../../components/ui/Skeleton'
+import {
+  SkeletonChartBlock,
+  SkeletonStatGrid,
+} from '../../components/skeletons/EnterpriseSkeletons'
+
 import { getAdminDashboard, type AdminDashboardResponse } from '../../services/dashboardApi'
 
 import { PolicyCard } from '../../components/widgets/PolicyCard'
@@ -13,6 +18,7 @@ import { downloadCsvFile, policiesToCsv, listPolicies } from '../../services/api
 
 export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
+
   const [error, setError] = useState<string | null>(null)
 
   const [dashboard, setDashboard] = useState<AdminDashboardResponse | null>(null)
@@ -98,11 +104,16 @@ export default function AdminDashboardPage() {
         ) : null}
 
         <section className="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            {stats.map((stat) => (
-              <StatCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} delta={stat.delta} tone={stat.tone} />
-            ))}
-          </div>
+          {loading ? (
+            <SkeletonStatGrid count={4} />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+              {stats.map((stat) => (
+                <StatCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} delta={stat.delta} tone={stat.tone} />
+              ))}
+            </div>
+          )}
+
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="flex items-center justify-between gap-4">
@@ -113,7 +124,16 @@ export default function AdminDashboardPage() {
               <Badge tone="indigo">Live</Badge>
             </div>
             <div className="mt-5 space-y-4">
-              {departmentAnalytics.length === 0 ? (
+              {loading ? (
+                <>
+                  {Array.from({ length: 4 }).map((_, idx) => (
+                    <div key={idx} className="space-y-2">
+                      <Skeleton className="h-4 w-48" />
+                      <Skeleton className="h-2 w-full rounded-full" />
+                    </div>
+                  ))}
+                </>
+              ) : departmentAnalytics.length === 0 ? (
                 <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">No department analytics available yet.</div>
               ) : (
                 departmentAnalytics.map((department) => (
@@ -129,6 +149,7 @@ export default function AdminDashboardPage() {
                 ))
               )}
             </div>
+
           </div>
         </section>
 
@@ -142,8 +163,10 @@ export default function AdminDashboardPage() {
               <Badge tone="green">Tracked</Badge>
             </div>
             <div className="mt-6">
-              {loading ? <Skeleton className="h-44 w-full" /> : <ChartCard chart={chart} />}
+              {loading ? <SkeletonChartBlock /> : <ChartCard chart={chart} />}
             </div>
+
+
 
           </div>
 
