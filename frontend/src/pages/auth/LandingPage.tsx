@@ -60,8 +60,8 @@ export default function LandingPage() {
 
               {/* Right */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" />
-                <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" />
+                {/* <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" />
+                <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" /> */}
 
                 <button
                   type="button"

@@ -16,8 +16,9 @@ export default function LoginPage() {
   const { login, loading } = useAuth()
   const nav = useNavigate()
   const location = useLocation()
-  const [email, setEmail] = useState('admin@example.com')
-  const [password, setPassword] = useState('password')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   const [error, setError] = useState<string | null>(null)
 
   async function onSubmit(e: React.FormEvent) {
