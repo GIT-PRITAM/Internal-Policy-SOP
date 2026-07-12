@@ -80,45 +80,214 @@ export default function LandingPage() {
 
         <main className="mx-auto max-w-6xl px-4 pb-12 pt-10">
           {/* Hero */}
-          <section className="flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
-              <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-violet-300/30 bg-violet-500/10">🛡</span>
-              Secure Enterprise Environment
-            </div>
+          <section className="relative">
+            <div className="mx-auto max-w-6xl">
+              <div className="grid gap-6 lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
+                {/* LEFT */}
+                <div className="lg:col-span-6">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
+                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-violet-300/30 bg-violet-500/10">🛡</span>
+                    Zero-Trust Governance Environment
+                  </div>
 
-            <h1 className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl">Welcome to the Corporate Policy & SOP Portal</h1>
-            <p className="mt-4 max-w-2xl text-slate-300 leading-relaxed">
-              Access official internal assessment guidelines, standard operating procedures, and company policies securely within our enterprise environment.
-            </p>
+                  <h1 className="mt-5 text-4xl font-semibold tracking-tight sm:text-5xl">
+                    Enterprise-grade Policy & SOP Management
+                  </h1>
 
-            <div className="mt-7 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => nav('/login')}
-                className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-8 py-4 font-semibold text-white shadow-[0_0_40px_rgba(147,51,234,0.25)] hover:opacity-95 transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
-              >
-                <span className="text-base">Employee Login</span>
-                <span aria-hidden className="text-white/90 font-bold">→</span>
-              </button>
+                  <p className="mt-4 max-w-xl text-slate-300 leading-relaxed">
+                    Securely create, review, and acknowledge internal policies with role-based visibility, version history, and audit-ready workflows.
+                  </p>
 
-              <div className="text-sm text-slate-400 max-w-xs">Secure authentication via internal Single Sign-On.</div>
-            </div>
+                  <div className="mt-7 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => nav('/login')}
+                      className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-8 py-4 font-semibold text-white shadow-[0_0_40px_rgba(147,51,234,0.25)] hover:opacity-95 transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
+                    >
+                      <span className="text-base">Employee Login</span>
+                      <span aria-hidden className="text-white/90 font-bold">→</span>
+                    </button>
 
-            <div className="mt-8 w-full max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="text-left">
-                  <div className="text-sm font-semibold text-slate-100">Mandatory Security Awareness</div>
-                  <div className="mt-1 text-xs text-slate-400">By continuing, you acknowledge internal governance policies.</div>
+                    <button
+                      type="button"
+                      onClick={() => nav('/login')}
+                      className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm font-semibold text-slate-200 transition hover:bg-white/10 active:scale-[0.99]"
+                    >
+                      Request Access
+                    </button>
+
+                    <div className="text-sm text-slate-400 max-w-xs">SSO-friendly authentication. Admin review workflows.</div>
+                  </div>
+
+                  {/* trust indicators */}
+                  <div className="mt-7 flex flex-wrap items-center gap-2">
+                    {[
+                      { label: 'Policies', tone: 'indigo' },
+                      { label: 'Employees', tone: 'fuchsia' },
+                      { label: 'Departments', tone: 'violet' },
+                    ].map((t) => (
+                      <div
+                        key={t.label}
+                        className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-indigo-300 shadow-[0_0_16px_rgba(129,140,248,0.45)]" />
+                        <span className="text-xs font-semibold text-slate-200">{t.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* condensed awareness card (keeps content) */}
+                  <div className="mt-7 w-full max-w-xl rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="text-left">
+                        <div className="text-sm font-semibold text-slate-100">Mandatory Security Awareness</div>
+                        <div className="mt-1 text-xs text-slate-400">By continuing, you acknowledge governance policies and SOP compliance requirements.</div>
+                      </div>
+                      <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
+                        Always On
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
-                  Always On
+
+                {/* RIGHT */}
+                <div className="lg:col-span-6">
+                  <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+                    <div className="flex items-center justify-between gap-4 px-2 py-2">
+                      <div>
+                        <div className="text-sm font-semibold text-slate-100">Dashboard Preview</div>
+                        <div className="text-xs text-slate-400 mt-1">Role-aware governance at a glance</div>
+                      </div>
+                      <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-950/20 px-3 py-2">
+                        <span className="h-2 w-2 rounded-full bg-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.45)]" />
+                        <span className="text-xs font-semibold text-emerald-200">Operational</span>
+                      </div>
+                    </div>
+
+                    {/* chart bar */}
+                    <div className="mt-3 rounded-2xl border border-white/10 bg-slate-950/20 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs font-semibold text-slate-200">Policy Compliance Pulse</div>
+                        <div className="text-xs text-slate-400">Last 6 weeks</div>
+                      </div>
+                      <div className="mt-4 grid grid-cols-6 gap-2">
+                        {[68, 74, 79, 71, 83, 88].map((v, idx) => (
+                          <div key={idx} className="flex flex-col items-center gap-2">
+                            <div
+                              className="w-full rounded-xl bg-gradient-to-b from-indigo-500/70 to-fuchsia-500/30 border border-white/10"
+                              style={{ height: `${Math.max(12, v)}px` }}
+                            />
+                            <div className="text-[10px] text-slate-500">W{idx + 1}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* cards grid */}
+                    <div className="mt-4 grid grid-cols-2 gap-3">
+                      {[
+                        {
+                          title: 'Active Policies',
+                          value: '312',
+                          sub: 'Approved & live',
+                          icon: '📄',
+                          tone: 'indigo',
+                        },
+                        {
+                          title: 'Pending Reviews',
+                          value: '18',
+                          sub: 'Awaiting approval',
+                          icon: '⏳',
+                          tone: 'amber',
+                        },
+                        {
+                          title: 'Acknowledgements',
+                          value: '2,941',
+                          sub: 'Signed this period',
+                          icon: '✅',
+                          tone: 'emerald',
+                        },
+                        {
+                          title: 'Security Status',
+                          value: 'Strong',
+                          sub: 'Zero-Trust enabled',
+                          icon: '🛡️',
+                          tone: 'fuchsia',
+                        },
+                        {
+                          title: 'Department Activity',
+                          value: '14',
+                          sub: 'Updates today',
+                          icon: '🏢',
+                          tone: 'violet',
+                        },
+                        {
+                          title: 'Audit Ready',
+                          value: 'Yes',
+                          sub: 'Version tracking',
+                          icon: '🧾',
+                          tone: 'slate',
+                        },
+                      ].map((c) => (
+                        <div
+                          key={c.title}
+                          className="rounded-2xl border border-white/10 bg-slate-950/20 p-4"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <div>
+                              <div className="text-[11px] font-semibold text-slate-400">{c.title}</div>
+                              <div className="mt-2 text-2xl font-semibold text-white/95 leading-none">{c.value}</div>
+                              <div className="mt-2 text-xs text-slate-400">{c.sub}</div>
+                            </div>
+                            <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center text-lg">
+                              {c.icon}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* mini table header */}
+                    <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/20 p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-xs font-semibold text-slate-200">Recent Policy Updates</div>
+                          <div className="text-[11px] text-slate-500 mt-1">A preview of workflow activity</div>
+                        </div>
+                        <div className="text-[11px] text-slate-400">Today</div>
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        {[
+                          { label: 'HR Policy v5', status: 'Approved', accent: 'emerald' },
+                          { label: 'Finance SOP v12', status: 'Pending', accent: 'amber' },
+                          { label: 'IT Security v3', status: 'Draft', accent: 'violet' },
+                        ].map((r) => (
+                          <div key={r.label} className="flex items-center justify-between gap-3">
+                            <div className="text-sm text-slate-200">{r.label}</div>
+                            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1">
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${
+                                  r.accent === 'emerald'
+                                    ? 'bg-emerald-300 shadow-[0_0_18px_rgba(52,211,153,0.45)]'
+                                    : r.accent === 'amber'
+                                      ? 'bg-amber-300 shadow-[0_0_18px_rgba(251,191,36,0.35)]'
+                                      : 'bg-violet-300 shadow-[0_0_18px_rgba(196,181,253,0.25)]'
+                                }`}
+                              />
+                              <span className="text-[11px] font-semibold text-slate-300">{r.status}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Statistics */}
-          <section className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-3">
+          <section className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { value: '15K+', label: 'Policies' },
               { value: '99.98%', label: 'Availability' },
@@ -174,7 +343,10 @@ export default function LandingPage() {
           <section className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
             <div className="flex items-center justify-between gap-4 flex-col sm:flex-row">
               <div className="flex items-center gap-3">
-                <IconBadge label={'🟢'} className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-emerald-500/10" />
+                <IconBadge
+                  label={'🟢'}
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-emerald-500/10"
+                />
                 <div>
                   <div className="text-sm font-semibold text-slate-100">Mandatory Security Awareness</div>
                   <div className="text-xs text-slate-400">Unauthorized access is prohibited.</div>
