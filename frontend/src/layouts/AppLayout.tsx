@@ -105,10 +105,10 @@ export default function AppLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
       <div className="sm:flex">
         <aside
-          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300`}
+          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300 h-screen sticky top-0 overflow-hidden`}
           aria-label="Sidebar"
         >
           <div className="flex h-20 items-center justify-between gap-4 px-5">

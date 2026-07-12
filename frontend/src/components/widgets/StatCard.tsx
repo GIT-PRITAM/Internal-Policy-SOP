@@ -21,7 +21,9 @@ export function StatCard({
           : 'border-emerald-400/25 bg-emerald-500/10 text-emerald-100'
 
   return (
-    <div className={`rounded-2xl border ${toneCls} p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5`}> 
+    <div
+      className={`rounded-2xl border ${toneCls} p-5 shadow-soft transition-all duration-300 hover:-translate-y-0.5 h-full flex flex-col`}
+    > 
       <div className="text-xs uppercase tracking-[0.3em] text-slate-400">{title}</div>
       <div className="mt-4 flex items-center justify-between gap-3">
         <div className="text-3xl font-semibold text-slate-100">{value}</div>
@@ -31,7 +33,9 @@ export function StatCard({
           </span>
         ) : null}
       </div>
-      {description ? <p className="mt-3 text-sm leading-6 text-slate-300">{description}</p> : null}
+      <div className="mt-3 text-sm leading-6 text-slate-300 flex-1">
+        {description ? description : <span className="opacity-0">—</span>}
+      </div>
     </div>
   )
 }

@@ -123,7 +123,8 @@ export default function AdminDashboardPage() {
               </div>
               <Badge tone="indigo">Live</Badge>
             </div>
-            <div className="mt-5 space-y-4">
+            <div className="mt-5 h-[320px] overflow-y-auto pr-2">
+              <div className="space-y-4">
               {loading ? (
                 <>
                   {Array.from({ length: 4 }).map((_, idx) => (
@@ -148,6 +149,7 @@ export default function AdminDashboardPage() {
                   </div>
                 ))
               )}
+              </div>
             </div>
 
           </div>
