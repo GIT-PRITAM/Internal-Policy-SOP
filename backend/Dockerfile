@@ -19,10 +19,10 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 # Copy the application source before installing dependencies, so Composer scripts can access artisan
-COPY backend/ ./
+COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
-COPY backend/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
 # Ensure Laravel storage and cache directories are writable by PHP-FPM
