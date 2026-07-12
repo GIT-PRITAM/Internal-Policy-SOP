@@ -3,6 +3,8 @@ import { useAuth } from './hooks/useAuth'
 import { AuthGuard } from './routes/AuthGuard'
 import { RoleGuard } from './routes/RoleGuard'
 import LoginPage from './pages/auth/LoginPage'
+import LandingPage from './pages/auth/LandingPage'
+
 import EmployeeDashboardPage from './pages/employee/EmployeeDashboardPage'
 import EmployeePoliciesPage from './pages/employee/EmployeePoliciesPage'
 import EmployeePolicyDetailsPage from './pages/employee/EmployeePolicyDetailsPage'
@@ -23,21 +25,8 @@ export default function App() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Navigate
-            to={
-              role === 'Admin'
-                ? '/admin/dashboard'
-                : role === 'Employee'
-                ? '/employee/dashboard'
-                : '/login'
-            }
-            replace
-          />
-        }
-      />
+      <Route path="/" element={<LandingPage />} />
+
 
       <Route path="/login" element={<LoginPage />} />
 
