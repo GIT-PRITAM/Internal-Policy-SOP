@@ -103,19 +103,27 @@ export default function AdminDashboardPage() {
           <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6 text-red-200">{error}</div>
         ) : null}
 
-        <section className="grid gap-4 xl:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-          {loading ? (
-            <SkeletonStatGrid count={4} />
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              {stats.map((stat) => (
-                <StatCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} delta={stat.delta} tone={stat.tone} />
-              ))}
-            </div>
-          )}
+        <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(320px,340px)] items-start">
+          <div className="min-w-0">
+            {loading ? (
+              <SkeletonStatGrid count={4} />
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 items-stretch">
+                {stats.map((stat) => (
+                  <StatCard
+                    key={stat.title}
+                    title={stat.title}
+                    value={stat.value}
+                    description={stat.description}
+                    delta={stat.delta}
+                    tone={stat.tone}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
 
-
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
+          <aside className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <p className="text-sm text-slate-400">Department analytics</p>
@@ -125,35 +133,38 @@ export default function AdminDashboardPage() {
             </div>
             <div className="mt-5 h-[320px] overflow-y-auto pr-2">
               <div className="space-y-4">
-              {loading ? (
-                <>
-                  {Array.from({ length: 4 }).map((_, idx) => (
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, idx) => (
                     <div key={idx} className="space-y-2">
                       <Skeleton className="h-4 w-48" />
                       <Skeleton className="h-2 w-full rounded-full" />
                     </div>
-                  ))}
-                </>
-              ) : departmentAnalytics.length === 0 ? (
-                <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">No department analytics available yet.</div>
-              ) : (
-                departmentAnalytics.map((department) => (
-                  <div key={department.name} className="space-y-2">
-                    <div className="flex items-center justify-between text-sm text-slate-300">
-                      <span>{department.name}</span>
-                      <span>{department.progress}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500" style={{ width: `${department.progress}%` }} />
-                    </div>
+                  ))
+                ) : departmentAnalytics.length === 0 ? (
+                  <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">
+                    No department analytics available yet.
                   </div>
-                ))
-              )}
+                ) : (
+                  departmentAnalytics.map((department) => (
+                    <div key={department.name} className="space-y-2">
+                      <div className="flex items-center justify-between text-sm text-slate-300">
+                        <span>{department.name}</span>
+                        <span>{department.progress}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-fuchsia-500"
+                          style={{ width: `${department.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
-
-          </div>
+          </aside>
         </section>
+
 
         <section className="grid gap-4 xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">

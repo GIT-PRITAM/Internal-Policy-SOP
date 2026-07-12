@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppLayout from '../../layouts/AppLayout'
+import AdminPageContainer from '../../components/admin/AdminPageContainer'
+import AdminPagination from '../../components/admin/AdminPagination'
 import { SearchBar } from '../../components/sections/SearchBar'
+
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Badge } from '../../components/ui/Badge'
-import { deletePolicy, listPolicies, listDepartments, Policy, Department } from '../../services/api'
+import { deletePolicy, listPolicies, listDepartments, type Department, type Policy } from '../../services/api'
 import {
   FilterDropdownSkeleton,
   PaginationSkeleton,
@@ -43,7 +46,7 @@ export default function AdminPoliciesPage() {
       })
       setPolicies(res.data.data.items)
       setMeta(res.data.data.meta)
-    } catch (err) {
+    } catch {
       setError('Unable to load policies.')
     } finally {
       setLoading(false)
@@ -69,7 +72,7 @@ export default function AdminPoliciesPage() {
     try {
       await deletePolicy(policyId)
       await loadPolicies()
-    } catch (err) {
+    } catch {
       setError('Unable to delete policy.')
     } finally {
       setLoading(false)
@@ -78,7 +81,7 @@ export default function AdminPoliciesPage() {
 
   return (
     <AppLayout>
-      <div className="space-y-5">
+      <AdminPageContainer>
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="text-3xl font-semibold">Policies</div>
@@ -93,7 +96,7 @@ export default function AdminPoliciesPage() {
           </button>
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[1.1fr_320px]">
+        <div className="grid gap-4 xl:grid-cols-[1.1fr_320px] min-w-0">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>
@@ -111,10 +114,20 @@ export default function AdminPoliciesPage() {
                   </>
                 ) : (
                   <>
-                    <SearchBar value={search} onChange={(value) => { setPage(1); setSearch(value) }} placeholder="Search policies…" />
+                    <SearchBar
+                      value={search}
+                      onChange={(value) => {
+                        setPage(1)
+                        setSearch(value)
+                      }}
+                      placeholder="Search policies…"
+                    />
                     <select
                       value={departmentId}
-                      onChange={(e) => { setPage(1); setDepartmentId(e.target.value ? Number(e.target.value) : '') }}
+                      onChange={(e) => {
+                        setPage(1)
+                        setDepartmentId(e.target.value ? Number(e.target.value) : '')
+                      }}
                       className="h-10 rounded-xl bg-slate-950/30 border border-white/10 px-3 text-slate-100 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
                     >
                       <option value="">All departments</option>
@@ -126,7 +139,10 @@ export default function AdminPoliciesPage() {
                     </select>
                     <select
                       value={status}
-                      onChange={(e) => { setPage(1); setStatus(e.target.value) }}
+                      onChange={(e) => {
+                        setPage(1)
+                        setStatus(e.target.value)
+                      }}
                       className="h-10 rounded-xl bg-slate-950/30 border border-white/10 px-3 text-slate-100 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20"
                     >
                       <option value="">Any status</option>
@@ -142,9 +158,13 @@ export default function AdminPoliciesPage() {
 
             {error ? <div className="mt-4 text-sm text-red-300">{error}</div> : null}
 
-            <div className="mt-5 overflow-x-auto">
+            <div className="mt-5 overflow-x-auto max-w-full">
               {loading ? (
-                <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 text-slate-300" aria-busy="true" aria-live="polite">
+                <div
+                  className="rounded-2xl border border-white/10 bg-slate-950/60 p-6 text-slate-300"
+                  aria-busy="true"
+                  aria-live="polite"
+                >
                   <div className="text-sm mb-4">Fetching policies…</div>
                   <table className="min-w-full text-sm text-left">
                     <thead className="text-slate-400">
@@ -195,14 +215,28 @@ export default function AdminPoliciesPage() {
                             {policy.title}
                           </button>
                         </td>
-                        <td className="py-3 px-3 text-slate-300">{departmentMap[policy.department_id ?? -1] ?? 'Unassigned'}</td>
+                        <td className="py-3 px-3 text-slate-300">
+                          {departmentMap[policy.department_id ?? -1] ?? 'Unassigned'}
+                        </td>
                         <td className="py-3 px-3 text-slate-300">{policy.visibility}</td>
                         <td className="py-3 px-3">
-                          <Badge tone={policy.status === 'Approved' ? 'green' : policy.status === 'Draft' ? 'slate' : policy.status === 'Under Review' ? 'amber' : 'indigo'}>
+                          <Badge
+                            tone={
+                              policy.status === 'Approved'
+                                ? 'green'
+                                : policy.status === 'Draft'
+                                  ? 'slate'
+                                  : policy.status === 'Under Review'
+                                    ? 'amber'
+                                    : 'indigo'
+                            }
+                          >
                             {policy.status}
                           </Badge>
                         </td>
-                        <td className="py-3 px-3 text-slate-300">{policy.updated_at ? new Date(policy.updated_at).toLocaleDateString() : '-'}</td>
+                        <td className="py-3 px-3 text-slate-300">
+                          {policy.updated_at ? new Date(policy.updated_at).toLocaleDateString() : '-'}
+                        </td>
                         <td className="py-3 px-3 space-x-2">
                           <button
                             type="button"
@@ -229,27 +263,14 @@ export default function AdminPoliciesPage() {
             {loading ? (
               <PaginationSkeleton />
             ) : (
-              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-400">
-                <span>
-                  Showing {policies.length} of {meta.total} policies
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    disabled={page <= 1}
-                    onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10 disabled:opacity-50"
-                  >
-                    Prev
-                  </button>
-                  <button
-                    disabled={page >= meta.last_page}
-                    onClick={() => setPage((prev) => Math.min(meta.last_page, prev + 1))}
-                    className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 transition hover:bg-white/10 disabled:opacity-50"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
+              <AdminPagination
+                page={page}
+                lastPage={meta.last_page}
+                loading={loading}
+                showingText={`Showing ${policies.length} of ${meta.total} policies`}
+                onPrev={() => setPage((prev) => Math.max(1, prev - 1))}
+                onNext={() => setPage((prev) => Math.min(meta.last_page, prev + 1))}
+              />
             )}
           </div>
 
@@ -290,7 +311,8 @@ export default function AdminPoliciesPage() {
             </div>
           </div>
         </div>
-      </div>
+      </AdminPageContainer>
     </AppLayout>
   )
 }
+

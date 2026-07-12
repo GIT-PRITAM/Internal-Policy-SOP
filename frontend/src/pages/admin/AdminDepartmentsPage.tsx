@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
+import AdminPageContainer from '../../components/admin/AdminPageContainer'
+
 import { Badge } from '../../components/ui/Badge'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { createDepartment, deleteDepartment, listDepartments, updateDepartment, Department } from '../../services/api'
@@ -84,14 +86,17 @@ export default function AdminDepartmentsPage() {
   )
 
   return (
-    <AppLayout>
-      <div className="space-y-5">
-        <div>
+<AppLayout>
+      <AdminPageContainer>
+        <div className="min-w-0">
+
           <div className="text-3xl font-semibold">Departments</div>
           <div className="text-slate-400 mt-1">Manage policy ownership and team structure.</div>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)]">
+
+        <div className="grid gap-4 lg:grid-cols-[360px_minmax(0,1fr)] min-w-0">
+
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -162,7 +167,8 @@ export default function AdminDepartmentsPage() {
                   <EmptyState title="No departments yet" description="Create a department to group policies and owners." />
                 </div>
               ) : (
-                <div className="mt-5 space-y-3">
+            <div className="mt-5 space-y-3 min-w-0">
+
                   {sortedDepartments.map((department) => (
                     <div key={department.id} className="rounded-3xl border border-white/10 bg-slate-950/60 p-4">
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -195,7 +201,8 @@ export default function AdminDepartmentsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </AdminPageContainer>
     </AppLayout>
   )
 }
+

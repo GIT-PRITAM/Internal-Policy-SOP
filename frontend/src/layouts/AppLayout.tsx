@@ -105,12 +105,13 @@ export default function AppLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className="h-screen bg-slate-950 text-slate-100 overflow-hidden">
-      <div className="flex h-full"> 
+    <div className="h-screen bg-slate-950 text-slate-100 overflow-hidden overflow-x-hidden">
+      <div className="flex h-full min-w-0"> 
         <aside
-          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300 h-screen fixed sm:sticky top-0 sm:top-0 overflow-hidden`}
+          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300 sticky top-0 h-[100vh] overflow-hidden`}
           aria-label="Sidebar"
         >
+
           <div className="flex h-20 items-center justify-between gap-4 px-5">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 shadow-[0_20px_50px_rgba(139,92,246,0.18)]">
