@@ -1,0 +1,1 @@
+React/Vite project will be generated here by code scaffolding in subsequent steps.
