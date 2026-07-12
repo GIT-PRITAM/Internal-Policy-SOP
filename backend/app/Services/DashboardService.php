@@ -213,19 +213,20 @@ class DashboardService
 
         $bookmarkedCount = $bookmarkedPolicies->count();
 
-        // Pending acknowledgements.
-        $pendingAcksQuery = Acknowledgement::query()
+        // Policies the user has NOT yet acknowledged (pending).
+        $acknowledgedPolicyIds = Acknowledgement::query()
             ->where('user_id', $user->id)
-            ->where('status', 'Pending')
-            ->whereHas('policyDocument', function ($q) use ($user) {
-                $this->employeePolicyScopeQuery($q, $user);
-            });
+            ->where('status', 'Acknowledged')
+            ->pluck('policy_document_id');
 
-        $pendingAcknowledgementsCount = (clone $pendingAcksQuery)->count();
+        $pendingPolicyQuery = PolicyDocument::query()
+            ->tap(fn (Builder $q) => $this->employeePolicyScopeQuery($q, $user))
+            ->whereNotIn('id', $acknowledgedPolicyIds);
 
-        $pendingAcknowledgements = (clone $pendingAcksQuery)
-            ->with(['policyDocument'])
-            ->orderByDesc('acknowledged_at')
+        $pendingAcknowledgementsCount = (clone $pendingPolicyQuery)->count();
+
+        $pendingAcknowledgements = (clone $pendingPolicyQuery)
+            ->orderByDesc('updated_at')
             ->limit(3)
             ->get();
 
@@ -282,12 +283,12 @@ class DashboardService
                     'tone' => 'indigo',
                 ],
             ],
-            'pendingAcknowledgements' => $pendingAcknowledgements->map(fn ($ack) => [
-                'policy_title' => $ack->policyDocument?->title,
-                'policy_summary' => $ack->policyDocument?->summary,
+            'pendingAcknowledgements' => $pendingAcknowledgements->map(fn ($policy) => [
+                'policy_title' => $policy->title,
+                'policy_summary' => $policy->summary,
                 'badge' => 'Due',
                 'badgeTone' => 'amber',
-                'policy_document_id' => $ack->policy_document_id,
+                'policy_document_id' => $policy->id,
             ])->values()->all(),
             'recentUpdates' => $recentUpdates->map(fn (PolicyDocument $p) => [
                 'title' => $p->title,

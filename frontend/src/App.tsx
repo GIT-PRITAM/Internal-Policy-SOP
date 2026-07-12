@@ -11,6 +11,8 @@ import EmployeePolicyDetailsPage from './pages/employee/EmployeePolicyDetailsPag
 import EmployeeSearchPage from './pages/employee/EmployeeSearchPage'
 import EmployeeBookmarksPage from './pages/employee/EmployeeBookmarksPage'
 import EmployeeProfilePage from './pages/employee/EmployeeProfilePage'
+import EmployeePendingAcknowledgementsPage from './pages/employee/EmployeePendingAcknowledgementsPage'
+import EmployeeCompletedAcknowledgementsPage from './pages/employee/EmployeeCompletedAcknowledgementsPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import AdminDepartmentsPage from './pages/admin/AdminDepartmentsPage'
 import AdminReviewBoardPage from './pages/admin/AdminReviewBoardPage'
@@ -46,6 +48,8 @@ export default function App() {
         <Route path="search" element={<EmployeeSearchPage />} />
         <Route path="bookmarks" element={<EmployeeBookmarksPage />} />
         <Route path="profile" element={<EmployeeProfilePage />} />
+        <Route path="acknowledgements/pending" element={<EmployeePendingAcknowledgementsPage />} />
+        <Route path="acknowledgements/completed" element={<EmployeeCompletedAcknowledgementsPage />} />
       </Route>
 
       <Route

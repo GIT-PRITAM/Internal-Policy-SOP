@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Approval;
+use App\Models\Notification;
+use App\Models\User;
 
 use App\Support\ApiResponse;
 use App\Support\PaginationMeta;
@@ -85,6 +87,37 @@ class ApprovalController extends Controller
         }
 
         $approval->policyDocument->save();
+
+        // Notify the policy owner about the decision
+        $policy = $approval->policyDocument;
+        $notificationTitle = $decision === 'Approved' ? 'Policy approved' : 'Policy rejected';
+        $notificationMessage = $decision === 'Approved'
+            ? "Policy \"{$policy->title}\" has been approved."
+            : "Policy \"{$policy->title}\" has been rejected.";
+
+        if ($policy->owner_user_id) {
+            Notification::query()->create([
+                'user_id' => $policy->owner_user_id,
+                'type' => $decision === 'Approved' ? 'policy_approved' : 'policy_rejected',
+                'title' => $notificationTitle,
+                'message' => $notificationMessage,
+                'is_read' => false,
+            ]);
+        }
+
+        // Also notify all other admins
+        $adminRoleId = \App\Models\Role::query()->where('name', 'Admin')->value('id');
+        $adminUsers = User::query()->where('role_id', $adminRoleId)->get();
+        foreach ($adminUsers as $admin) {
+            if ($admin->id === $policy->owner_user_id) continue;
+            Notification::query()->create([
+                'user_id' => $admin->id,
+                'type' => $decision === 'Approved' ? 'policy_approved' : 'policy_rejected',
+                'title' => $notificationTitle,
+                'message' => $notificationMessage,
+                'is_read' => false,
+            ]);
+        }
 
         return ApiResponse::success(
             data: [

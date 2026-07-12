@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo, useState } from 'react'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import {
   Bars3Icon,
   BellIcon,
@@ -16,6 +16,8 @@ import {
 } from '@heroicons/react/24/outline'
 import { useAuth } from '../hooks/useAuth'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { NotificationsPanel } from '../components/sections/NotificationsPanel'
+import { unreadNotificationCount, markAllNotificationsAsRead } from '../services/notificationsApi'
 
 type NavItem = {
   href: string
@@ -46,6 +48,40 @@ export default function AppLayout({ children }: PropsWithChildren) {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [alertsOpen, setAlertsOpen] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  // Poll unread count periodically
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await unreadNotificationCount()
+        const count = (res.data as any)?.data?.unread_count ?? 0
+        setUnreadCount(count)
+      } catch {
+        // ignore
+      }
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Refresh when opening alerts
+  useEffect(() => {
+    if (!alertsOpen) return
+    let cancelled = false
+    async function load() {
+      try {
+        const res = await unreadNotificationCount()
+        if (!cancelled) {
+          const count = (res.data as any)?.data?.unread_count ?? 0
+          setUnreadCount(count)
+        }
+      } catch {
+        // ignore
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [alertsOpen])
 
   const navItems = useMemo(() => {
     if (!role) return []
@@ -57,6 +93,15 @@ export default function AppLayout({ children }: PropsWithChildren) {
   const handleLogout = async () => {
     await logout()
     navigate('/login', { replace: true })
+  }
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllNotificationsAsRead()
+      setUnreadCount(0)
+    } catch {
+      // ignore
+    }
   }
 
   return (
@@ -177,24 +222,41 @@ export default function AppLayout({ children }: PropsWithChildren) {
                     aria-label="Notifications"
                   >
                     <BellIcon className="h-5 w-5" />
-                    <span className="absolute -right-0.5 top-0.5 h-2.5 w-2.5 rounded-full bg-fuchsia-500 ring-2 ring-slate-950" />
+                    {unreadCount > 0 ? (
+                      <span className="absolute -right-1.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-fuchsia-500 px-1 text-[10px] font-bold text-white ring-2 ring-slate-950">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    ) : (
+                      <span className="absolute -right-0.5 top-0.5 h-2.5 w-2.5 rounded-full bg-fuchsia-500 ring-2 ring-slate-950" />
+                    )}
                   </button>
                   {alertsOpen ? (
-                    <div className="absolute right-0 top-full mt-2 w-80 rounded-3xl border border-white/10 bg-slate-950/95 p-4 shadow-soft backdrop-blur-xl">
-                      <div className="flex items-center justify-between gap-2 text-sm font-medium text-slate-100">
-                        <span>Notifications</span>
-                        <button
-                          type="button"
-                          onClick={() => setAlertsOpen(false)}
-                          className="text-slate-400 hover:text-slate-100"
-                        >
-                          Close
-                        </button>
-                      </div>
-                      <div className="mt-4 space-y-3 text-sm text-slate-300">
-                        <p className="rounded-2xl border border-white/10 bg-slate-950/40 p-3">
-                          Notifications are not available because backend notification endpoints are not exposed in this build.
-                        </p>
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 sm:absolute sm:right-0 sm:top-full sm:mt-2 sm:w-[28rem] sm:inset-auto">
+                      <div className="w-full max-h-[80vh] overflow-y-auto rounded-3xl border border-white/10 bg-slate-950/95 p-4 shadow-soft backdrop-blur-xl">
+                        <div className="flex items-center justify-between gap-2 text-sm font-medium text-slate-100">
+                          <span>Notifications</span>
+                          <div className="flex items-center gap-2">
+                            {unreadCount > 0 ? (
+                              <button
+                                type="button"
+                                onClick={handleMarkAllRead}
+                                className="text-xs text-indigo-300 hover:text-indigo-200"
+                              >
+                                Mark all read
+                              </button>
+                            ) : null}
+                            <button
+                              type="button"
+                              onClick={() => setAlertsOpen(false)}
+                              className="text-slate-400 hover:text-slate-100"
+                            >
+                              Close
+                            </button>
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <NotificationsPanel />
+                        </div>
                       </div>
                     </div>
                   ) : null}
@@ -252,4 +314,3 @@ export default function AppLayout({ children }: PropsWithChildren) {
     </div>
   )
 }
-
