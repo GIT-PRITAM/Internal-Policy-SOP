@@ -105,10 +105,10 @@ export default function AppLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden">
-      <div className="sm:flex">
+    <div className="h-screen bg-slate-950 text-slate-100 overflow-hidden">
+      <div className="flex h-full"> 
         <aside
-          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300 h-screen sticky top-0 overflow-hidden`}
+          className={`hidden sm:flex ${collapsed ? 'w-20' : 'w-80'} flex-col border-r border-white/10 bg-slate-950/90 shadow-soft backdrop-blur-xl transition-all duration-300 h-screen fixed sm:sticky top-0 sm:top-0 overflow-hidden`}
           aria-label="Sidebar"
         >
           <div className="flex h-20 items-center justify-between gap-4 px-5">
@@ -168,8 +168,8 @@ export default function AppLayout({ children }: PropsWithChildren) {
           </div>
         </aside>
 
-        <div className="flex-1">
-          <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/95 backdrop-blur-xl px-4 py-4 shadow-sm sm:px-6">
+        <div className="flex-1 flex min-w-0 flex-col">
+          <header className="shrink-0 border-b border-white/10 bg-slate-950/95 backdrop-blur-xl px-4 py-4 shadow-sm sm:px-6">
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <button
@@ -308,7 +308,7 @@ export default function AppLayout({ children }: PropsWithChildren) {
             </div>
           ) : null}
 
-          <main className="px-4 py-6 sm:px-6 sm:py-8">{children}</main>
+          <main className="flex-1 min-h-0 overflow-y-auto px-4 py-6 sm:px-6 sm:py-8">{children}</main>
         </div>
       </div>
     </div>
