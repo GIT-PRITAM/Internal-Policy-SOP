@@ -3,6 +3,7 @@ import AppLayout from '../../layouts/AppLayout'
 import { Badge } from '../../components/ui/Badge'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { createDepartment, deleteDepartment, listDepartments, updateDepartment, Department } from '../../services/api'
+import { SkeletonDepartmentList } from '../../components/skeletons/EnterpriseSkeletons'
 
 export default function AdminDepartmentsPage() {
   const [departments, setDepartments] = useState<Department[]>([])
@@ -151,8 +152,12 @@ export default function AdminDepartmentsPage() {
               </div>
 
               {loading ? (
-                <div className="mt-5 text-slate-300">Loading departments…</div>
+                <div className="mt-5" aria-busy="true" aria-live="polite">
+                  <div className="text-slate-300 text-sm mb-3">Preparing department data…</div>
+                  <SkeletonDepartmentList count={5} />
+                </div>
               ) : sortedDepartments.length === 0 ? (
+
                 <div className="mt-5">
                   <EmptyState title="No departments yet" description="Create a department to group policies and owners." />
                 </div>
