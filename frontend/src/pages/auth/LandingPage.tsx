@@ -81,7 +81,7 @@ export default function LandingPage() {
           {/* Hero */}
           <section className="relative">
             <div className="mx-auto max-w-6xl">
-              <div className="grid gap-20 lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
+              <div className="grid w-full space-between lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
                 {/* LEFT */}
                 <div className="lg:col-span-6">
                   <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
@@ -142,7 +142,7 @@ export default function LandingPage() {
                         <div className="mt-1 text-xs text-slate-400">By continuing, you acknowledge governance policies and SOP compliance requirements.</div>
                       </div>
                       <div className="inline-flex items-center rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-200">
-                        Always On
+                        On
                       </div>
                     </div>
                   </div>
