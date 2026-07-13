@@ -150,6 +150,43 @@ export default function LandingPage() {
                 </div>
 
                 {/* RIGHT */}
+                  <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                title: 'Secure Access',
+                desc: 'Role-based access with controlled visibility for each department.',
+                badge: '🔒',
+              },
+              {
+                title: 'Official Guidelines',
+                desc: 'Up-to-date internal SOPs and assessment standards.',
+                badge: '📘',
+              },
+              {
+                title: 'Smart Repository',
+                desc: 'Search, version history, acknowledgements, and approvals in one place.',
+                badge: '🗄️',
+              },
+            ].map((c) => (
+              <div
+                key={c.title}
+                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
+              >
+                <div className="flex items-start gap-4">
+                  <IconBadge label={c.badge} />
+                  <div>
+                    <div className="text-base font-semibold text-white/95">{c.title}</div>
+                    <div className="mt-2 text-sm text-slate-300 leading-relaxed">{c.desc}</div>
+                  </div>
+                </div>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-violet-500/10 blur-2xl transition group-hover:opacity-100 opacity-80"
+                />
+              </div>
+            ))}
+          </div>
+          
                 {/* <div className="lg:col-span-6">
                   <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur">
                     <div className="flex items-center justify-between gap-4 px-2 py-2">
@@ -298,42 +335,7 @@ export default function LandingPage() {
           </section> */}
 
           {/* Feature cards row */}
-          <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: 'Secure Access',
-                desc: 'Role-based access with controlled visibility for each department.',
-                badge: '🔒',
-              },
-              {
-                title: 'Official Guidelines',
-                desc: 'Up-to-date internal SOPs and assessment standards.',
-                badge: '📘',
-              },
-              {
-                title: 'Smart Repository',
-                desc: 'Search, version history, acknowledgements, and approvals in one place.',
-                badge: '🗄️',
-              },
-            ].map((c) => (
-              <div
-                key={c.title}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
-              >
-                <div className="flex items-start gap-4">
-                  <IconBadge label={c.badge} />
-                  <div>
-                    <div className="text-base font-semibold text-white/95">{c.title}</div>
-                    <div className="mt-2 text-sm text-slate-300 leading-relaxed">{c.desc}</div>
-                  </div>
-                </div>
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute -right-14 -top-14 h-40 w-40 rounded-full bg-violet-500/10 blur-2xl transition group-hover:opacity-100 opacity-80"
-                />
-              </div>
-            ))}
-          </section>
+        
 
           {/* Security strip */}
           <section className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
