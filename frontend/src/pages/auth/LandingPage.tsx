@@ -60,8 +60,7 @@ export default function LandingPage() {
 
               {/* Right */}
               <div className="flex items-center gap-2 sm:gap-3">
-                {/* <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" />
-                <div className="hidden sm:inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5" /> */}
+                
 
                 <button
                   type="button"
@@ -151,7 +150,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* RIGHT */}
-                <div className="lg:col-span-6">
+                {/* <div className="lg:col-span-6">
                   <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur">
                     <div className="flex items-center justify-between gap-4 px-2 py-2">
                       <div>
@@ -164,7 +163,6 @@ export default function LandingPage() {
                       </div>
                     </div>
 
-                    {/* chart bar */}
                     <div className="mt-3 rounded-2xl border border-white/10 bg-slate-950/20 p-4">
                       <div className="flex items-center justify-between">
                         <div className="text-xs font-semibold text-slate-200">Policy Compliance Pulse</div>
@@ -183,7 +181,6 @@ export default function LandingPage() {
                       </div>
                     </div>
 
-                    {/* cards grid */}
                     <div className="mt-4 grid grid-cols-2 gap-3">
                       {[
                         {
@@ -247,7 +244,6 @@ export default function LandingPage() {
                       ))}
                     </div>
 
-                    {/* mini table header */}
                     <div className="mt-4 rounded-2xl border border-white/10 bg-slate-950/20 p-4">
                       <div className="flex items-center justify-between">
                         <div>
@@ -281,13 +277,13 @@ export default function LandingPage() {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </section>
 
           {/* Statistics */}
-          <section className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {/* <section className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { value: '15K+', label: 'Policies' },
               { value: '99.98%', label: 'Availability' },
@@ -299,7 +295,7 @@ export default function LandingPage() {
                 <div className="mt-1 text-xs text-slate-400">{s.label}</div>
               </div>
             ))}
-          </section>
+          </section> */}
 
           {/* Feature cards row */}
           <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
