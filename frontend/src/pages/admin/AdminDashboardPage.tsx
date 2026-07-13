@@ -159,7 +159,7 @@ export default function AdminDashboardPage() {
               </div>
               <Badge tone="indigo">Live</Badge>
             </div>
-            <div className="mt-5 h-[120px] overflow-y-auto pr-2 no-scrollbar">
+            <div className="mt-5 h-[100px] overflow-y-auto pr-2 no-scrollbar">
               <div className="space-y-4">
                 {loading ? (
                   Array.from({ length: 4 }).map((_, idx) => (
@@ -287,7 +287,11 @@ export default function AdminDashboardPage() {
                 )}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
+              
+            </div>
+          </div>
+        </section>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <h2 className="text-xl font-semibold text-slate-100">
@@ -322,9 +326,6 @@ export default function AdminDashboardPage() {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
       </div>
     </AppLayout>
   );

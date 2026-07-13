@@ -15,3 +15,21 @@ body {
   @apply bg-slate-950 text-slate-100 antialiased;
 }
 
+/* ==========================================
+   Hide Scrollbar (keeps scrolling enabled)
+   ========================================== */
+
+/* Chrome, Edge & Safari */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Internet Explorer & old Edge */
+.no-scrollbar {
+  -ms-overflow-style: none;
+}
