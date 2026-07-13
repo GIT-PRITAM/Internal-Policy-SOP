@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom'
+import EnterpriseBackground from '../../components/auth/EnterpriseBackground'
+
 
 function IconBadge({ label, className }: { label: string; className?: string }) {
   return (
@@ -18,18 +20,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen text-slate-100">
-      {/* Premium layered background (no external CSS) */}
+      {/* Premium layered background (shared with Login) */}
       <div className="relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900" />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-violet-500/15 blur-3xl" />
-        <div className="absolute top-40 -left-20 h-[420px] w-[420px] rounded-full bg-fuchsia-500/10 blur-3xl" />
-        <div className="absolute bottom-0 right-0 h-[520px] w-[520px] rounded-full bg-indigo-500/10 blur-3xl" />
-
-        {/* subtle grid pattern */}
-        <div
-          aria-hidden
-          className="absolute inset-0 opacity-[0.08] bg-[linear-gradient(to_right,rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,1)_1px,transparent_1px)] bg-[size:46px_46px]"
-        />
+        <EnterpriseBackground />
 
         <header className="sticky top-0 z-20">
           <div className="mx-auto max-w-6xl px-4 py-4">
