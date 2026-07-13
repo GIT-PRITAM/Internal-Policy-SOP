@@ -131,10 +131,10 @@ export default function EmployeeDashboardPage() {
             </div>
 
             {/* Notifications */}
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-0 shadow-soft overflow-hidden">
+            {/* <div className="rounded-2xl border border-white/10 bg-white/5 p-0 shadow-soft overflow-hidden">
               <NotificationsPanel />
             </div>
-          </div>
+          </div> */}
 
         </section>
 
