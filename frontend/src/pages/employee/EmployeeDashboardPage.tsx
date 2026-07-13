@@ -43,7 +43,6 @@ export default function EmployeeDashboardPage() {
   const pendingAcknowledgements = dashboard?.pendingAcknowledgements ?? [];
   const recentUpdates = dashboard?.recentUpdates ?? [];
   const bookmarkedPolicies = dashboard?.bookmarkedPolicies ?? [];
-  const chart = dashboard?.chart ?? null;
 
   const quickActions = [
     { label: "Review pending acknowledgements", tone: "amber" as const },
@@ -239,28 +238,7 @@ export default function EmployeeDashboardPage() {
             </div> */}
           </div>
 
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-100">
-                    Team pulse
-                  </h2>
-                  <p className="text-sm text-slate-400">
-                    Acknowledgement momentum
-                  </p>
-                </div>
-                <Badge tone="green">Healthy</Badge>
-              </div>
-              <div className="mt-5">
-                {loading ? (
-                  <Skeleton className="h-44 w-full" />
-                ) : (
-                  <ChartCard chart={chart} />
-                )}
-              </div>
-            </div>
-          </div>
+         
         </section>
       </div>
     </AppLayout>
