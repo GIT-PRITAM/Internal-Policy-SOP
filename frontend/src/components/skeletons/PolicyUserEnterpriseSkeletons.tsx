@@ -1,34 +1,81 @@
 import React from 'react'
 import { Skeleton } from '../ui/Skeleton'
 
-export function SearchBarSkeleton({ heightClass = 'h-11' }: { heightClass?: string }) {
+// export function SearchBarSkeleton({ heightClass = 'h-11' }: { heightClass?: string }) {
+//   return (
+//     <div className={`rounded-xl border border-white/10 bg-white/5 px-4 py-2 ${heightClass} flex items-center gap-3`} aria-busy="true">
+//       <Skeleton className="h-4 w-4 rounded-full" />
+//       <Skeleton className="h-4 w-24" />
+//       <div className="flex-1" />
+//       <Skeleton className="h-4 w-6" />
+//     </div>
+//   )
+// }
+
+export function SearchBarSkeleton({ heightClass = 'h-12' }: { heightClass?: string }) {
   return (
-    <div className={`rounded-xl border border-white/10 bg-white/5 px-4 py-2 ${heightClass} flex items-center gap-3`} aria-busy="true">
-      <Skeleton className="h-4 w-4 rounded-full" />
-      <Skeleton className="h-4 w-24" />
+    <div
+      className={`flex items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/70 px-4 ${heightClass} shadow-sm`}
+      aria-busy="true"
+    >
+      <Skeleton className="h-5 w-5 rounded-full" />
+      <Skeleton className="h-4 w-40" />
       <div className="flex-1" />
-      <Skeleton className="h-4 w-6" />
+      <Skeleton className="h-5 w-5 rounded-full" />
     </div>
   )
 }
 
-export function FilterDropdownSkeleton({ widthClass = 'w-full' }: { widthClass?: string }) {
+// export function FilterDropdownSkeleton({ widthClass = 'w-full' }: { widthClass?: string }) {
+//   return (
+//     <div className={`${widthClass} rounded-xl border border-white/10 bg-white/5 px-3 py-2 flex items-center gap-3`} aria-busy="true">
+//       <Skeleton className="h-4 w-24" />
+//       <div className="flex-1" />
+//       <Skeleton className="h-4 w-4" />
+//     </div>
+//   )
+// }
+
+export function FilterDropdownSkeleton({
+  widthClass = 'w-full',
+}: {
+  widthClass?: string
+}) {
   return (
-    <div className={`${widthClass} rounded-xl border border-white/10 bg-white/5 px-3 py-2 flex items-center gap-3`} aria-busy="true">
-      <Skeleton className="h-4 w-24" />
+    <div
+      className={`${widthClass} flex h-12 items-center gap-3 rounded-2xl border border-white/10 bg-slate-900/70 px-4 shadow-sm`}
+      aria-busy="true"
+    >
+      <Skeleton className="h-4 w-28" />
       <div className="flex-1" />
-      <Skeleton className="h-4 w-4" />
+      <Skeleton className="h-4 w-4 rounded-full" />
     </div>
   )
 }
+
+// export function PaginationSkeleton() {
+//   return (
+//     <div className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-busy="true">
+//       <Skeleton className="h-4 w-56" />
+//       <div className="flex items-center gap-2">
+//         <Skeleton className="h-9 w-20 rounded-2xl" />
+//         <Skeleton className="h-9 w-20 rounded-2xl" />
+//       </div>
+//     </div>
+//   )
+// }
 
 export function PaginationSkeleton() {
   return (
-    <div className="mt-4 flex flex-wrap items-center justify-between gap-3" aria-busy="true">
-      <Skeleton className="h-4 w-56" />
-      <div className="flex items-center gap-2">
-        <Skeleton className="h-9 w-20 rounded-2xl" />
-        <Skeleton className="h-9 w-20 rounded-2xl" />
+    <div
+      className="mt-6 flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/40 p-4"
+      aria-busy="true"
+    >
+      <Skeleton className="h-4 w-48" />
+
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-24 rounded-xl" />
+        <Skeleton className="h-10 w-24 rounded-xl" />
       </div>
     </div>
   )
