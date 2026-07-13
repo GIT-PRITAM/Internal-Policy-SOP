@@ -74,7 +74,7 @@ export default function AdminDashboardPage() {
     <AppLayout>
       <div className="space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 shadow-soft backdrop-blur-xl">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm uppercase tracking-[0.35em] text-indigo-300/70">
                 Admin dashboard
@@ -152,14 +152,13 @@ export default function AdminDashboardPage() {
           <aside className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="text-sm text-slate-400">Department analytics</p>
                 <h2 className="text-xl font-semibold text-slate-100">
-                  Team compliance pulse
+                  Department analytics{" "}
                 </h2>
               </div>
               <Badge tone="indigo">Live</Badge>
             </div>
-            <div className="mt-5 h-[100px] overflow-y-auto pr-2 no-scrollbar">
+            <div className="mt-5 h-[90px] overflow-y-auto pr-2 no-scrollbar">
               <div className="space-y-4">
                 {loading ? (
                   Array.from({ length: 4 }).map((_, idx) => (
@@ -286,46 +285,44 @@ export default function AdminDashboardPage() {
                   ))
                 )}
               </div>
-
-              
             </div>
           </div>
         </section>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <h2 className="text-xl font-semibold text-slate-100">
-                      New policies
-                    </h2>
-                    <p className="text-sm text-slate-400">
-                      Most recently updated policies
-                    </p>
-                  </div>
-                  <Badge tone="indigo">Top 3</Badge>
-                </div>
-                <div className="mt-5 space-y-3">
-                  {topPolicies.length === 0 ? (
-                    <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">
-                      No policies available yet.
-                    </div>
-                  ) : (
-                    topPolicies.map((policy) => (
-                      <button
-                        key={policy.id}
-                        type="button"
-                        onClick={() => navigate("/admin/policies")}
-                        className="w-full text-left rounded-3xl border border-white/10 bg-slate-950/60 p-4 transition hover:-translate-y-0.5 hover:bg-slate-900/80"
-                      >
-                        <PolicyCard
-                          title={policy.title}
-                          badge={policy.status}
-                          description={policy.summary ?? "No summary provided."}
-                        />
-                      </button>
-                    ))
-                  )}
-                </div>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-slate-100">
+                New policies
+              </h2>
+              <p className="text-sm text-slate-400">
+                Most recently updated policies
+              </p>
+            </div>
+            <Badge tone="indigo">Top 3</Badge>
+          </div>
+          <div className="mt-5 space-y-3">
+            {topPolicies.length === 0 ? (
+              <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">
+                No policies available yet.
               </div>
+            ) : (
+              topPolicies.map((policy) => (
+                <button
+                  key={policy.id}
+                  type="button"
+                  onClick={() => navigate("/admin/policies")}
+                  className="w-full text-left rounded-3xl border border-white/10 bg-slate-950/60 p-4 transition hover:-translate-y-0.5 hover:bg-slate-900/80"
+                >
+                  <PolicyCard
+                    title={policy.title}
+                    badge={policy.status}
+                    description={policy.summary ?? "No summary provided."}
+                  />
+                </button>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </AppLayout>
   );
