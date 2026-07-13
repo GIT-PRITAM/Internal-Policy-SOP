@@ -41,7 +41,7 @@ export default function AppNavbar() {
 
           {/* Right */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <button
+            {/* <button
               type="button"
               onClick={() => navigate('/login')}
               className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 via-indigo-500 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_28px_rgba(168,85,247,0.25)] ring-1 ring-white/10 hover:brightness-110 transition active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-fuchsia-400"
@@ -50,7 +50,12 @@ export default function AppNavbar() {
               <span aria-hidden className="text-white/90 font-bold">
                 →
               </span>
-            </button>
+            </button> */}
+            <div className="hidden sm:flex items-center gap-3 text-slate-300 text-sm">
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                Secure • Role-based • Auditable
+              </span>
+            </div>
           </div>
         </div>
       </div>
