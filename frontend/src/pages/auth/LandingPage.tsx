@@ -81,7 +81,7 @@ export default function LandingPage() {
           {/* Hero */}
           <section className="relative">
             <div className="mx-auto max-w-6xl">
-              <div className="grid w-full space-between lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
+              <div className="grid gap-24 lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
                 {/* LEFT */}
                 <div className="lg:col-span-6">
                   <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
