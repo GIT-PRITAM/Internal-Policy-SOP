@@ -150,7 +150,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* RIGHT */}
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="mt-6 flex flex-col gap-4">
             {[
               {
                 title: 'Secure Access',
@@ -186,7 +186,7 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-          
+
                 {/* <div className="lg:col-span-6">
                   <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur">
                     <div className="flex items-center justify-between gap-4 px-2 py-2">
