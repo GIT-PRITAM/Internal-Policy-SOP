@@ -81,7 +81,7 @@ export default function LandingPage() {
           {/* Hero */}
           <section className="relative">
             <div className="mx-auto max-w-6xl">
-              <div className="grid gap-6 lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
+              <div className="grid space-between lg:grid-cols-12 items-center" style={{ minHeight: '70vh' }}>
                 {/* LEFT */}
                 <div className="lg:col-span-6">
                   <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-4 py-1.5 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
@@ -107,15 +107,14 @@ export default function LandingPage() {
                       <span aria-hidden className="text-white/90 font-bold">→</span>
                     </button>
 
-                    <button
+                    {/* <button
                       type="button"
                       onClick={() => nav('/login')}
                       className="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-sm font-semibold text-slate-200 transition hover:bg-white/10 active:scale-[0.99]"
                     >
                       Request Access
-                    </button>
+                    </button> */}
 
-                    <div className="text-sm text-slate-400 max-w-xs">SSO-friendly authentication. Admin review workflows.</div>
                   </div>
 
                   {/* trust indicators */}
