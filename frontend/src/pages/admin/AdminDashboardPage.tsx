@@ -15,6 +15,7 @@ import { getAdminDashboard, type AdminDashboardResponse } from '../../services/d
 import { PolicyCard } from '../../components/widgets/PolicyCard'
 import { Badge } from '../../components/ui/Badge'
 import { downloadCsvFile, policiesToCsv, listPolicies } from '../../services/api'
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
@@ -60,6 +61,8 @@ export default function AdminDashboardPage() {
     }
   }
 
+  const displayedPendingReviews = pendingReviews.slice(0, 3)
+
   return (
     <AppLayout>
       <div className="space-y-6">
@@ -73,14 +76,14 @@ export default function AdminDashboardPage() {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              <button
+              {/* <button
                 type="button"
                 onClick={handleExport}
                 disabled={loading}
                 className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 transition hover:bg-white/10 disabled:opacity-60"
               >
                 Export report
-              </button>
+              </button> */}
               <button
                 type="button"
                 onClick={() => navigate('/admin/policies/new')}
@@ -88,13 +91,22 @@ export default function AdminDashboardPage() {
               >
                 New policy
               </button>
-              <button
+              {/* <button
                 type="button"
                 onClick={() => navigate('/admin/review-board')}
                 className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 transition hover:bg-white/10"
               >
                 Review board
-              </button>
+              </button> */}
+              <button
+  type="button"
+  onClick={handleExport}
+  disabled={loading}
+  className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-slate-800 hover:border-slate-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+>
+  <ArrowDownTrayIcon className="h-5 w-5 text-slate-300" />
+  {loading ? 'Exporting...' : 'Export Report'}
+</button>
             </div>
           </div>
         </section>
@@ -182,7 +194,7 @@ export default function AdminDashboardPage() {
 
 
           </div>
-
+{/* 
           <div className="space-y-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
               <div className="flex items-center justify-between gap-4">
@@ -210,7 +222,40 @@ export default function AdminDashboardPage() {
                   ))
                 )}
               </div>
-            </div>
+            </div> */}
+            <div className="mt-5 space-y-3">
+  {displayedPendingReviews.length === 0 ? (
+    <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">
+      No pending approvals at the moment.
+    </div>
+  ) : (
+    displayedPendingReviews.map((item) => (
+      <button
+        key={item.id}
+        type="button"
+        onClick={() => navigate('/admin/review-board')}
+        className="w-full rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-left transition-all duration-200 hover:border-amber-400/40 hover:bg-slate-900 hover:shadow-lg hover:shadow-amber-500/10"
+      >
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="font-semibold text-slate-100">
+              Policy #{item.policy_document_id}
+            </p>
+            <p className="text-sm text-slate-400">
+              Approver: {item.approver?.name ?? item.approver_user_id}
+            </p>
+          </div>
+
+          <Badge tone="amber">{item.status}</Badge>
+        </div>
+
+        <div className="mt-3 text-sm text-slate-500">
+          {item.comments ?? 'Awaiting reviewer comments.'}
+        </div>
+      </button>
+    ))
+  )}
+</div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
               <div className="flex items-center justify-between gap-4">
@@ -237,7 +282,6 @@ export default function AdminDashboardPage() {
                 )}
               </div>
             </div>
-          </div>
         </section>
       </div>
     </AppLayout>
