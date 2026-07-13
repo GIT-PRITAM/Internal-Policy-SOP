@@ -150,7 +150,7 @@ export default function LandingPage() {
                 </div>
 
                 {/* RIGHT */}
-                  <div className="mt-6 flex flex-col gap-4">
+                  <div className="mt-6 flex flex-col gap-4 min-w-[340px]">
             {[
               {
                 title: 'Secure Access',
@@ -170,7 +170,7 @@ export default function LandingPage() {
             ].map((c) => (
               <div
                 key={c.title}
-                className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
+                className="group relative w-full overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/10"
               >
                 <div className="flex items-start gap-4">
                   <IconBadge label={c.badge} />
