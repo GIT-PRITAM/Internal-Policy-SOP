@@ -272,10 +272,12 @@ export default function AdminEditPolicyPage() {
                         try {
                           await submitPolicyForReview(Number(id), { change_summary: '' })
                           show({ tone: 'success', title: 'Submitted for review' })
-                          // Reload policy to get updated status
-                          const refreshed = await getPolicy(Number(id), { include_content: 1 })
-                          setPolicy(refreshed.data.data.policy)
-                          setStatus(refreshed.data.data.policy.status)
+
+                          // Update local state immediately; avoid refetching policy content.
+                          // Backend is known (from UX copy) to move Draft -> Under Review.
+                          const nextStatus = 'Under Review' as typeof statusOptions[number]
+                          setStatus(nextStatus)
+                          setPolicy((prev) => (prev ? { ...prev, status: nextStatus } : prev))
                         } catch {
                           show({ tone: 'error', title: 'Failed', message: 'Unable to submit policy for review.' })
                         } finally {

@@ -5,21 +5,34 @@ import { Badge } from '../../components/ui/Badge'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { listCompletedAcknowledgements, type AcknowledgementPolicyItem, type AcknowledgementsMeta } from '../../services/acknowledgementsApi'
+import { useAppData } from '../../context/AppDataContext'
 
 export default function EmployeeCompletedAcknowledgementsPage() {
   const navigate = useNavigate()
 
-  const [items, setItems] = useState<AcknowledgementPolicyItem[]>([])
-  const [meta, setMeta] = useState<AcknowledgementsMeta | null>(null)
+  const { state: appData, setState } = useAppData()
+  const cached = appData.employeeAcknowledgementsCompleted
+
+  const [items, setItems] = useState<AcknowledgementPolicyItem[]>(cached?.items ?? [])
+  const [meta, setMeta] = useState<AcknowledgementsMeta | null>(cached?.meta ?? null)
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!cached)
   const [error, setError] = useState<string | null>(null)
 
   const perPage = 10
 
   useEffect(() => {
     let cancelled = false
+
     async function load() {
+      // Use cached data on revisit for page=1.
+      if (cached && page === 1) {
+        setItems(cached.items)
+        setMeta(cached.meta)
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
       try {
@@ -29,15 +42,29 @@ export default function EmployeeCompletedAcknowledgementsPage() {
         const nextItems: AcknowledgementPolicyItem[] = Array.isArray(data.data) ? data.data : (data.data as any)?.items ?? []
         setItems(nextItems)
         setMeta(data.meta ?? null)
+
+        // Cache first page only.
+        if (page === 1) {
+          setState((prev) => ({
+            ...prev,
+            employeeAcknowledgementsCompleted: {
+              items: nextItems,
+              meta: data.meta,
+            },
+          }))
+        }
       } catch {
         if (!cancelled) setError('Unable to load completed acknowledgements.')
       } finally {
         if (!cancelled) setLoading(false)
       }
     }
+
     load()
-    return () => { cancelled = true }
-  }, [page])
+    return () => {
+      cancelled = true
+    }
+  }, [page, cached, setState])
 
   return (
     <AppLayout>

@@ -63,54 +63,68 @@ export default function AdminReviewBoardPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">No pending approvals were found.</div>
         ) : (
           <div className="space-y-4">
-            {items.map((approval) => {
-              const isApprover = Boolean(currentUserId) && approval.approver_user_id === currentUserId
+            {(() => {
+              // Stable ordering: assigned approver reviews first, preserving original relative order.
+              const pending = items ?? []
+              const assigned: typeof pending = []
+              const others: typeof pending = []
 
-              return (
-                <AdminReviewApprovalCard
-                  key={approval.id}
-                  approval={approval}
-                  isApprover={isApprover}
-                  onDecide={async (decision, comments) => {
-                    const ok = window.confirm(
-                      decision === 'Approved'
-                        ? 'Approve this policy? This will update its status to Approved.'
-                        : 'Reject this policy? This will update its status back to Draft.'
-                    )
-                    if (!ok) return
+              for (const approval of pending) {
+                const isApprover = Boolean(currentUserId) && approval.approver_user_id === currentUserId
+                ;(isApprover ? assigned : others).push(approval)
+              }
 
-                    try {
-                      await decideApproval(approval.id, { decision, comments })
-                      show({
-                        tone: 'success',
-                        title: 'Decision saved',
-                        message:
-                          decision === 'Approved'
-                            ? 'Policy approved.'
-                            : 'Policy rejected.',
-                      })
+              const ordered = assigned.concat(others)
 
-                      // Update context immediately; do not refetch.
-                      setState((prev) => {
-                        const current = prev.adminReviewBoard?.items ?? []
-                        return {
-                          ...prev,
-                          adminReviewBoard: {
-                            items: current.filter((i) => i.id !== approval.id),
-                          },
-                        }
-                      })
-                    } catch {
-                      show({
-                        tone: 'error',
-                        title: 'Unable to save decision',
-                        message: 'Please try again.',
-                      })
-                    }
-                  }}
-                />
-              )
-            })}
+              return ordered.map((approval) => {
+                const isApprover = Boolean(currentUserId) && approval.approver_user_id === currentUserId
+
+                return (
+                  <AdminReviewApprovalCard
+                    key={approval.id}
+                    approval={approval}
+                    isApprover={isApprover}
+                    onDecide={async (decision, comments) => {
+                      const ok = window.confirm(
+                        decision === 'Approved'
+                          ? 'Approve this policy? This will update its status to Approved.'
+                          : 'Reject this policy? This will update its status back to Draft.'
+                      )
+                      if (!ok) return
+
+                      try {
+                        await decideApproval(approval.id, { decision, comments })
+                        show({
+                          tone: 'success',
+                          title: 'Decision saved',
+                          message:
+                            decision === 'Approved'
+                              ? 'Policy approved.'
+                              : 'Policy rejected.',
+                        })
+
+                        // Update context immediately; do not refetch.
+                        setState((prev) => {
+                          const current = prev.adminReviewBoard?.items ?? []
+                          return {
+                            ...prev,
+                            adminReviewBoard: {
+                              items: current.filter((i) => i.id !== approval.id),
+                            },
+                          }
+                        })
+                      } catch {
+                        show({
+                          tone: 'error',
+                          title: 'Unable to save decision',
+                          message: 'Please try again.',
+                        })
+                      }
+                    }}
+                  />
+                )
+              })
+            })()}
 
           </div>
         )}

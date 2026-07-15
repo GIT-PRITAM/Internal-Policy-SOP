@@ -111,8 +111,33 @@ export default function AdminPoliciesPage() {
     setError(null)
     try {
       await deletePolicy(policyId)
-      // Refresh policies after delete to keep UI in sync
-      await loadPolicies()
+
+      // Update UI immediately without refetch.
+      setPolicies((prev) => prev.filter((p) => p.id !== policyId))
+      setMeta((prev) => ({
+        ...prev,
+        total: Math.max(0, prev.total - 1),
+      }))
+      setState((prev) => {
+        if (!prev.adminPolicies) return prev
+        const nextItems = prev.adminPolicies.items.filter((p) => p.id !== policyId)
+        return {
+          ...prev,
+          adminPolicies: {
+            items: nextItems,
+            meta: {
+              ...prev.adminPolicies.meta,
+              total: Math.max(0, prev.adminPolicies.meta.total - 1),
+            },
+          },
+        }
+      })
+
+      // If the current page becomes empty but there might be more policies on the server,
+      // we allow a refetch to avoid showing a blank page.
+      if (policies.length <= 1) {
+        await loadPolicies()
+      }
     } catch {
       setError('Unable to delete policy.')
     } finally {
