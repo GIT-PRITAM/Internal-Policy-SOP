@@ -40,7 +40,7 @@ const employeeNav: NavItem[] = [
   { href: '/employee/policies', label: 'Policies', icon: DocumentTextIcon, roles: ['Employee'] },
   { href: '/employee/search', label: 'Search', icon: MagnifyingGlassIcon, roles: ['Employee'] },
   { href: '/employee/bookmarks', label: 'Bookmarks', icon: BookmarkIcon, roles: ['Employee'] },
-  { href: '/employee/acknowledgements/pending', label: 'Acknowledgements', icon: BellIcon, roles: ['Employee'] },
+  { href: '/employee/acknowledgements/completed', label: 'Acknowledgements', icon: BellIcon, roles: ['Employee'] },
 ]
 
 
