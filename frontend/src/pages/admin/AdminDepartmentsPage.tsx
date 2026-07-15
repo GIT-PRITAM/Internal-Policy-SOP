@@ -24,15 +24,11 @@ export default function AdminDepartmentsPage() {
   const [updating, setUpdating] = useState(false)
   const [saving, setSaving] = useState(false)
 
-  const loadDepartments = async () => {
-    // If we already have cached data, avoid re-fetching.
-    if (cached) {
-      setDepartments(cached)
-      setLoading(false)
-      return
-    }
+  const resetError = () => setError(null)
 
+  const fetchDepartments = async () => {
     setLoading(true)
+    resetError()
     try {
       const res = await listDepartments({ per_page: 100 })
       const items = res.data.data.items
@@ -43,6 +39,15 @@ export default function AdminDepartmentsPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadDepartments = async () => {
+    if (cached) {
+      setDepartments(cached)
+      setLoading(false)
+      return
+    }
+    await fetchDepartments()
   }
 
   useEffect(() => {
@@ -69,6 +74,7 @@ export default function AdminDepartmentsPage() {
     }
 
     setSaving(true)
+    resetError()
     try {
       if (editId) {
         await updateDepartment(editId, { name, description })
@@ -76,9 +82,10 @@ export default function AdminDepartmentsPage() {
         await createDepartment({ name, description })
       }
       resetForm()
-      await loadDepartments()
-    } catch (err) {
-      setError('Unable to save department.')
+      await fetchDepartments()
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? err?.response?.data?.errors?.name?.[0] ?? 'Unable to save department.'
+      setError(msg)
     } finally {
       setSaving(false)
     }
@@ -93,11 +100,13 @@ export default function AdminDepartmentsPage() {
   const handleDelete = async (id: number) => {
     if (!window.confirm('Delete this department?')) return
     setUpdating(true)
+    resetError()
     try {
       await deleteDepartment(id)
-      await loadDepartments()
-    } catch (err) {
-      setError('Unable to delete department.')
+      await fetchDepartments()
+    } catch (err: any) {
+      const msg = err?.response?.data?.message ?? 'Unable to delete department.'
+      setError(msg)
     } finally {
       setUpdating(false)
     }
@@ -228,4 +237,3 @@ export default function AdminDepartmentsPage() {
     </AppLayout>
   )
 }
-

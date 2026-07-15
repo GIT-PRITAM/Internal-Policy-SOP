@@ -42,7 +42,7 @@ class BookmarkController extends Controller
     {
         $this->service->remove(
             userId: $request->user()->id,
-            policyId: $request->integer('policy_id')
+            policyId: (int) $request->route('policy_id')
         );
 
         return response()->json([
