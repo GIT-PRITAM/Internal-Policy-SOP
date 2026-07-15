@@ -28,9 +28,11 @@ export default function EmployeePendingAcknowledgementsPage() {
 
   useEffect(() => {
     let cancelled = false
+
     async function load() {
-      // If we already have cached data for first page, do not refetch.
-      if (cached && page === 1) {
+      // First visit: fetch + skeleton.
+      // Revisit: immediately render cached data from AppDataContext (no API call).
+      if (cached) {
         setItems(cached.items)
         setMeta(cached.meta)
         setLoading(false)
@@ -47,6 +49,7 @@ export default function EmployeePendingAcknowledgementsPage() {
         setItems(nextItems)
         setMeta(data.meta ?? null)
 
+        // Store only first-page result for fast revisits.
         if (page === 1) {
           setState((prev) => ({
             ...prev,
@@ -62,9 +65,13 @@ export default function EmployeePendingAcknowledgementsPage() {
         if (!cancelled) setLoading(false)
       }
     }
+
     load()
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [page, cached, setState])
+
 
 
   const handleAcknowledge = async (policyId: number) => {

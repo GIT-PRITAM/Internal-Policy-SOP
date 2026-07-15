@@ -1,23 +1,36 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppLayout from '../../layouts/AppLayout'
+
 import { Badge } from '../../components/ui/Badge'
-import { PolicyCard } from '../../components/widgets/PolicyCard'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Skeleton } from '../../components/ui/Skeleton'
+
 import { listBookmarks, removeBookmark, type Policy } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
+import { useAppData } from '../../context/AppDataContext'
+
 
 export default function EmployeeBookmarksPage() {
   const navigate = useNavigate()
   const { show } = useToast()
 
-  const [bookmarks, setBookmarks] = useState<Policy[]>([])
-  const [loading, setLoading] = useState(true)
+  const { state: appData, setState } = useAppData()
+  const cached = appData.employeeBookmarks
+
+  const [bookmarks, setBookmarks] = useState<Policy[]>(cached ?? [])
+  const [loading, setLoading] = useState(!cached)
+
   const [error, setError] = useState<string | null>(null)
   const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
   useEffect(() => {
+    // If we have cached data, avoid showing skeleton / extra skeletons.
+
+    // First visit: fetch + skeleton
+    // Revisit: use AppDataContext immediately (no extra API calls)
+    if (cached) return
+
     let cancelled = false
     async function load() {
       setLoading(true)
@@ -28,21 +41,36 @@ export default function EmployeeBookmarksPage() {
         const data = res.data
         const items = Array.isArray(data.data) ? data.data : (data.data as any)?.items ?? []
         setBookmarks(items)
+        setState((prev) => ({
+          ...prev,
+          employeeBookmarks: items,
+        }))
       } catch {
         if (!cancelled) setError('Unable to load bookmarks.')
       } finally {
         if (!cancelled) setLoading(false)
       }
     }
+
     load()
-    return () => { cancelled = true }
-  }, [])
+    return () => {
+      cancelled = true
+    }
+  }, [cached, setState])
+
 
   const handleRemove = async (policyId: number) => {
     setRemovingIds((prev) => new Set(prev).add(policyId))
     try {
       await removeBookmark(policyId)
-      setBookmarks((prev) => prev.filter((b) => b.id !== policyId))
+      setBookmarks((prev) => {
+        const next = prev.filter((b) => b.id !== policyId)
+        setState((sPrev) => ({
+          ...sPrev,
+          employeeBookmarks: next,
+        }))
+        return next
+      })
       show({ tone: 'success', title: 'Bookmark removed' })
     } catch {
       show({ tone: 'error', title: 'Failed', message: 'Unable to remove bookmark.' })
@@ -54,6 +82,7 @@ export default function EmployeeBookmarksPage() {
       })
     }
   }
+
 
   return (
     <AppLayout>
