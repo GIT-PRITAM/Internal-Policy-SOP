@@ -9,6 +9,7 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { Badge } from '../../components/ui/Badge'
 import { deletePolicy, listPolicies, listDepartments, type Department, type Policy } from '../../services/api'
 import { useAppData } from '../../context/AppDataContext'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 
 
 
@@ -33,7 +34,7 @@ export default function AdminPoliciesPage() {
   const [visibility, setVisibility] = useState('')
   const [status, setStatus] = useState('')
   const [page, setPage] = useState(1)
-  const [meta, setMeta] = useState({ total: 0, per_page: 10, current_page: 1, last_page: 1 })
+  const [meta, setMeta] = useState({ total: 0, per_page: 4, current_page: 1, last_page: 1 })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -62,7 +63,7 @@ export default function AdminPoliciesPage() {
     setLoading(true)
     try {
       const res = await listPolicies({
-        per_page: 10,
+        per_page: 4,
         page,
         search: search.trim() || undefined,
         department_id: departmentId || undefined,
@@ -107,14 +108,28 @@ export default function AdminPoliciesPage() {
   const handleDelete = async (policyId: number) => {
     if (!window.confirm('Delete this policy?')) return
     setLoading(true)
+    setError(null)
     try {
       await deletePolicy(policyId)
+      // Refresh policies after delete to keep UI in sync
+      await loadPolicies()
     } catch {
       setError('Unable to delete policy.')
     } finally {
       setLoading(false)
     }
   }
+
+  // Compute status counts from the current policies list
+  const statusCounts = useMemo(() => {
+    const counts = { total: meta.total, Approved: 0, 'Under Review': 0, Archived: 0, Draft: 0 }
+    for (const p of policies) {
+      if (p.status in counts) {
+        (counts as any)[p.status]++
+      }
+    }
+    return counts
+  }, [policies, meta.total])
 
 
   return (
@@ -152,14 +167,18 @@ export default function AdminPoliciesPage() {
                   </>
                 ) : (
                   <>
-                    <SearchBar
-                      value={search}
-                      onChange={(value) => {
-                        setPage(1)
-                        setSearch(value)
-                      }}
-                      placeholder="Search policies…"
-                    />
+                    <div className="relative col-span-1 sm:col-span-2 xl:col-span-1">
+                      <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                      <input
+                        value={search}
+                        onChange={(e) => {
+                          setPage(1)
+                          setSearch(e.target.value)
+                        }}
+                        placeholder="Search policies…"
+                        className="w-full h-10 pl-10 pr-4 rounded-xl bg-slate-950/30 border border-white/10 text-slate-100 placeholder:text-slate-500 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/20 transition"
+                      />
+                    </div>
                     <select
                       value={departmentId}
                       onChange={(e) => {
@@ -216,7 +235,7 @@ export default function AdminPoliciesPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {Array.from({ length: 5 }).map((_, idx) => (
+                      {Array.from({ length: 4 }).map((_, idx) => (
                         <PolicyTableRowSkeleton key={idx} />
                       ))}
                     </tbody>
@@ -329,20 +348,36 @@ export default function AdminPoliciesPage() {
                     <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
                     <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
                   </div>
+                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
+                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
+                  </div>
+                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
+                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
+                  </div>
                 </>
               ) : (
                 <>
                   <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Total policies</span>
-                    <span>{meta.total}</span>
+                    <span>Total Policies</span>
+                    <span>{statusCounts.total}</span>
                   </div>
                   <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Current page</span>
-                    <span>{meta.current_page}</span>
+                    <span>Approved</span>
+                    <span>{statusCounts.Approved}</span>
                   </div>
                   <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Departments</span>
-                    <span>{departments.length}</span>
+                    <span>Under Review</span>
+                    <span>{statusCounts['Under Review']}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                    <span>Archived</span>
+                    <span>{statusCounts.Archived}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                    <span>Draft</span>
+                    <span>{statusCounts.Draft}</span>
                   </div>
                 </>
               )}

@@ -5,16 +5,19 @@ import { decideApproval } from '../../services/approvalsApi'
 import { useToast } from '../../hooks/useToast'
 import AdminReviewApprovalCard from './AdminReviewApprovalCard'
 import { useAppData } from '../../context/AppDataContext'
+import { useAuth } from '../../hooks/useAuth'
 
 export default function AdminReviewBoardPage() {
   const { show } = useToast()
   const { state: appData, setState } = useAppData()
+  const { user } = useAuth()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const items = appData.adminReviewBoard?.items ?? []
   const hasData = Boolean(appData.adminReviewBoard)
+  const currentUserId = user?.id
 
   useEffect(() => {
     let cancelled = false

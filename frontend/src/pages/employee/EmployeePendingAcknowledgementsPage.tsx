@@ -79,8 +79,21 @@ export default function EmployeePendingAcknowledgementsPage() {
     try {
       await acknowledgePolicy(policyId)
       show({ tone: 'success', title: 'Acknowledged', message: 'Your acknowledgement has been recorded.' })
-      // Remove from list
-      setItems((prev) => prev.filter((item) => item.id !== policyId))
+      // Remove from list and update AppDataContext cache
+      setItems((prev) => {
+        const next = prev.filter((item) => item.id !== policyId)
+        setState((sPrev) => {
+          if (!sPrev.employeeAcknowledgementsPending) return sPrev
+          return {
+            ...sPrev,
+            employeeAcknowledgementsPending: {
+              items: next,
+              meta: sPrev.employeeAcknowledgementsPending.meta,
+            },
+          }
+        })
+        return next
+      })
     } catch {
       show({ tone: 'error', title: 'Failed', message: 'Unable to acknowledge policy.' })
     } finally {
