@@ -334,53 +334,26 @@ export default function AdminPoliciesPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
             <div className="font-medium text-slate-100">Quick summary</div>
             <div className="mt-4 space-y-3 text-slate-300" aria-busy={loading ? 'true' : undefined}>
-              {loading ? (
-                <>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <div className="h-4 w-28 bg-white/5 rounded animate-pulse" />
-                    <div className="h-4 w-14 bg-white/5 rounded animate-pulse" />
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Total Policies</span>
-                    <span>{statusCounts.total}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Approved</span>
-                    <span>{statusCounts.Approved}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Under Review</span>
-                    <span>{statusCounts['Under Review']}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Archived</span>
-                    <span>{statusCounts.Archived}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                    <span>Draft</span>
-                    <span>{statusCounts.Draft}</span>
-                  </div>
-                </>
-              )}
+              <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                <span>Total Policies</span>
+                <span>{statusCounts.total}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                <span>Approved</span>
+                <span>{statusCounts.Approved}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                <span>Under Review</span>
+                <span>{statusCounts['Under Review']}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                <span>Archived</span>
+                <span>{statusCounts.Archived}</span>
+              </div>
+              <div className="flex items-center justify-between rounded-3xl border border-white/10 bg-slate-950/60 p-4">
+                <span>Draft</span>
+                <span>{statusCounts.Draft}</span>
+              </div>
             </div>
           </div>
         </div>
