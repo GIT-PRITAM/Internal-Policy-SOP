@@ -20,6 +20,8 @@ import { PolicyCard } from '../../components/widgets/PolicyCard'
 import type { AdminDashboardResponse } from '../../services/dashboardApi'
 import { getAdminDashboard } from '../../services/dashboardApi'
 import { useNavigate } from 'react-router-dom'
+import { useCachedAsync } from '../../hooks/useCachedAsync'
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
 
@@ -30,23 +32,23 @@ export default function AdminAnalyticsPage() {
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    async function load() {
-      setLoading(true)
-      try {
-        const res = await getAdminDashboard()
-        setDashboard(res.data.data)
-      } catch {
-        setError('Unable to load analytics data.')
-      } finally {
-        setLoading(false)
-      }
-    }
+  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<AdminDashboardResponse>(
+    'dashboard:admin',
+    async () => {
+      const res = await getAdminDashboard()
+      return res.data.data
+    },
+    { staleTimeMs: 60_000, returnStaleImmediately: true },
+  )
 
-    load()
-  }, [])
+  useEffect(() => {
+    setDashboard(cachedDashboard)
+    setLoading(cachedLoading)
+    setError(cachedError)
+  }, [cachedDashboard, cachedLoading, cachedError])
 
   const stats = dashboard?.stats ?? []
+
   const pendingReviews = dashboard?.pendingReviews ?? []
   const topPolicies = dashboard?.topPolicies ?? []
   const departmentAnalytics = dashboard?.departmentAnalytics ?? []

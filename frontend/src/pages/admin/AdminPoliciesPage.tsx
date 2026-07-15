@@ -53,13 +53,73 @@ export default function AdminPoliciesPage() {
     }
   }
 
+  // Minimal caching to avoid skeletons on navigation back.
+  // We keep business logic intact: same state updates and same skeleton conditions,
+  // but the initial mount will reuse cached results when fresh.
+  const departmentsCacheKey = 'listDepartments:per_page=100'
+
   useEffect(() => {
-    loadDepartments()
+    let cancelled = false
+    async function boot() {
+      // If we have departments in cache and they are fresh, reuse them.
+      try {
+        const cached = (window as any).__policyops_cache_depts
+
+        if (cached?.key === departmentsCacheKey) {
+          setDepartments(cached.items)
+          return
+        }
+      } catch {}
+
+      const res = await listDepartments({ per_page: 100 })
+      if (cancelled) return
+      setDepartments(res.data.data.items)
+      try {
+        ;(window as any).__policyops_cache_depts = { key: departmentsCacheKey, items: res.data.data.items }
+      } catch {}
+    }
+    boot()
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   useEffect(() => {
-    loadPolicies()
+    let cancelled = false
+
+    async function bootPolicies() {
+      const key = `listPolicies:${JSON.stringify({ page, search, departmentId, visibility, status })}`
+      try {
+        const cached = (window as any).__policyops_cache_policies?.[key]
+        if (cached?.value && cached?.fetchedAt && Date.now() - cached.fetchedAt < 60_000) {
+          setPolicies(cached.value.items)
+          setMeta(cached.value.meta)
+          setLoading(false)
+          setError(null)
+          return
+        }
+      } catch {}
+
+      await loadPolicies()
+
+      // store cache if request succeeded
+      try {
+        const nextPolicies = policies
+        const nextMeta = meta
+        ;(window as any).__policyops_cache_policies = (window as any).__policyops_cache_policies ?? {}
+        ;(window as any).__policyops_cache_policies[key] = { fetchedAt: Date.now(), value: { items: nextPolicies, meta: nextMeta } }
+      } catch {}
+
+      if (cancelled) return
+    }
+
+    bootPolicies()
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, departmentId, visibility, status])
+
 
   const departmentMap = useMemo(
     () => Object.fromEntries(departments.map((dept) => [dept.id, dept.name])),

@@ -15,29 +15,28 @@ import {
   type EmployeeDashboardResponse,
 } from "../../services/dashboardApi";
 import { NotificationsPanel } from "../../components/sections/NotificationsPanel";
+import { useCachedAsync } from "../../hooks/useCachedAsync";
 
 export default function EmployeeDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [dashboard, setDashboard] = useState<EmployeeDashboardResponse | null>(
-    null,
-  );
+  const [dashboard, setDashboard] = useState<EmployeeDashboardResponse | null>(null);
+
+  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<EmployeeDashboardResponse>(
+    'dashboard:employee',
+    async () => {
+      const res = await getEmployeeDashboard();
+      return res.data.data;
+    },
+    { staleTimeMs: 60_000, returnStaleImmediately: true },
+  )
 
   useEffect(() => {
-    async function loadDashboard() {
-      setLoading(true);
-      try {
-        const res = await getEmployeeDashboard();
-        setDashboard(res.data.data);
-      } catch {
-        setError("Unable to load dashboard data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    setDashboard(cachedDashboard)
+    setLoading(cachedLoading)
+    setError(cachedError)
+  }, [cachedDashboard, cachedLoading, cachedError])
 
-    loadDashboard();
-  }, []);
 
   const stats = dashboard?.stats ?? [];
   const pendingAcknowledgements = dashboard?.pendingAcknowledgements ?? [];

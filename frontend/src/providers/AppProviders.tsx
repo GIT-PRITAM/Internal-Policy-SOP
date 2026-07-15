@@ -10,6 +10,8 @@ import { ToastProvider } from '../hooks/useToast'
 
 
 
+import { DataCacheProvider } from '../context/DataCacheContext'
+
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false)
 
@@ -21,5 +23,12 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   if (!hydrated) return <div className="min-h-screen bg-slate-950" />
 
-  return <ToastProvider><AuthProvider>{children}</AuthProvider></ToastProvider>
+  return (
+    <ToastProvider>
+      <AuthProvider>
+        <DataCacheProvider>{children}</DataCacheProvider>
+      </AuthProvider>
+    </ToastProvider>
+  )
 }
+

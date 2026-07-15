@@ -17,6 +17,8 @@ import {
 
 import { PolicyCard } from "../../components/widgets/PolicyCard";
 import { Badge } from "../../components/ui/Badge";
+import { useCachedAsync } from "../../hooks/useCachedAsync";
+
 import {
   downloadCsvFile,
   policiesToCsv,
@@ -25,37 +27,37 @@ import {
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 export default function AdminDashboardPage() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null)
 
-  const [dashboard, setDashboard] = useState<AdminDashboardResponse | null>(
-    null,
-  );
+  const [dashboard, setDashboard] = useState<AdminDashboardResponse | null>(null)
+
 
   const navigate = useNavigate();
 
+  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<AdminDashboardResponse>(
+    'dashboard:admin',
+    async () => {
+      const res = await getAdminDashboard();
+      return res.data.data;
+    },
+    { staleTimeMs: 60_000, returnStaleImmediately: true },
+  )
+
   useEffect(() => {
-    async function loadDashboard() {
-      setLoading(true);
-      try {
-        const res = await getAdminDashboard();
-        setDashboard(res.data.data);
-      } catch {
-        setError("Unable to load dashboard data. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    }
+    // Keep existing UI state wiring (loading/error) minimal.
+    setDashboard(cachedDashboard)
+    setLoading(cachedLoading)
+    setError(cachedError)
+  }, [cachedDashboard, cachedLoading, cachedError])
 
-    loadDashboard();
-  }, []);
+  const stats = dashboard?.stats ?? []
+  const departmentAnalytics = dashboard?.departmentAnalytics ?? []
+  const pendingReviews = dashboard?.pendingReviews ?? []
+  const topPolicies = dashboard?.topPolicies ?? []
+  const chart = dashboard?.chart ?? null
 
-  const stats = dashboard?.stats ?? [];
-  const departmentAnalytics = dashboard?.departmentAnalytics ?? [];
-  const pendingReviews = dashboard?.pendingReviews ?? [];
-  const topPolicies = dashboard?.topPolicies ?? [];
-  const chart = dashboard?.chart ?? null;
 
   const handleExport = async () => {
     setLoading(true);
