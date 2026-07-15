@@ -96,25 +96,26 @@ export default function AdminDashboardPage() {
   return (
     <AppLayout>
       <div className="space-y-6">
-        <section className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-6 shadow-soft backdrop-blur-xl">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <p className="text-sm uppercase tracking-[0.35em] text-indigo-300/70">
+        <section className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5 shadow-soft backdrop-blur-xl">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-indigo-300/70">
                 Admin dashboard
               </p>
-              <h1 className="mt-3 text-4xl font-semibold text-white">
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                 Policy governance at a glance
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
-                Monitor approvals, acknowledgements, and department health with
-                live policy data.
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
+                Monitor approvals, acknowledgements, and department health with live policy data.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+
+            {/* Actions: aligned to the far right */}
+            <div className="flex w-full flex-col items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center sm:justify-end">
               <button
                 type="button"
                 onClick={() => navigate("/admin/policies/new")}
-                className="rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-4 py-3 text-sm font-semibold text-white shadow-soft transition hover:opacity-95"
+                className="order-2 sm:order-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:opacity-95"
               >
                 New policy
               </button>
@@ -122,7 +123,7 @@ export default function AdminDashboardPage() {
                 type="button"
                 onClick={handleExport}
                 disabled={loading}
-                className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-slate-800 hover:border-slate-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-700 bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-slate-800 hover:border-slate-600 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <ArrowDownTrayIcon className="h-5 w-5 text-slate-300" />
                 {loading ? "Exporting..." : "Export Report"}
@@ -130,6 +131,7 @@ export default function AdminDashboardPage() {
             </div>
           </div>
         </section>
+
 
         {error ? (
           <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6 text-red-200">

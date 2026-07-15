@@ -1,12 +1,11 @@
-- [x] Fix Review Board permission logic (only)
-  - [x] Identify root cause in AdminReviewApprovalCard / AdminReviewBoardPage
-  - [x] Update comparison to use correct logged-in user id and correct backend approver field
-  - [x] Ensure UI shows Approve/Reject only when logged-in admin is assigned approver
-  - [x] Ensure UI shows Comment-only for non-assigned admins
-  - [x] Keep changes limited to the relevant UI components
+# TODO
 
-- [x] Run `npm run build` (frontend)
-- [x] Confirm build succeeds
+- [x] Inspect current AdminDashboardPage top hero section (title/subtitle + action buttons + governance at a glance area)
+- [x] Draft UI-only changes: align “New policy” and “Export Report” to far right horizontally
+- [x] Redesign “Policy governance at a glance” hero section: compact layout, spacing/typography hierarchy, dark SaaS colors, alignment improvements, responsive tweaks
+- [x] Implement Tailwind-only layout/color/typography changes without touching business logic
+- [x] Run `npm run build` in frontend and ensure build passes
+- [x] Report modified files
 
 
 
