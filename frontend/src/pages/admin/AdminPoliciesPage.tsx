@@ -8,7 +8,9 @@ import { SearchBar } from '../../components/sections/SearchBar'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Badge } from '../../components/ui/Badge'
 import { deletePolicy, listPolicies, listDepartments, type Department, type Policy } from '../../services/api'
-import { useCachedAsync } from '../../hooks/useCachedAsync'
+import { useAppData } from '../../context/AppDataContext'
+
+
 
 import {
   FilterDropdownSkeleton,
@@ -19,8 +21,12 @@ import {
 
 export default function AdminPoliciesPage() {
   const navigate = useNavigate()
+
+  const { state: appData, setState } = useAppData()
+
   const [policies, setPolicies] = useState<Policy[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
+
   const [search, setSearch] = useState('')
   const [departmentId, setDepartmentId] = useState<number | ''>('')
   const [visibility, setVisibility] = useState('')
@@ -31,68 +37,61 @@ export default function AdminPoliciesPage() {
   const [error, setError] = useState<string | null>(null)
 
 
-  const perPage = 10
+  const loadDepartments = async () => {
+    // This page still performs list calls with UI filters.
+    // Departments are cached globally for the session.
+    if (appData.adminDepartments) {
+      setDepartments(appData.adminDepartments)
+      return
+    }
 
-  const departmentsKey = 'departments:per_page=100'
-  const policiesKey = `policies:page=${page}|search=${search.trim()}|departmentId=${String(departmentId)}|visibility=${visibility}|status=${status}|perPage=${perPage}`
+    const res = await listDepartments({ per_page: 100 })
+    setDepartments(res.data.data.items)
+    setState((prev) => ({ ...prev, adminDepartments: res.data.data.items }))
+  }
 
-  const {
-    data: cachedDepartments,
-    loading: departmentsLoading,
-    error: departmentsError,
-  } = useCachedAsync<Department[]>(
-    departmentsKey,
-    async () => {
-      const res = await listDepartments({ per_page: 100 })
-      return res.data.data.items
-    },
-    { staleTimeMs: 60_000, returnStaleImmediately: true },
-  )
 
-  const {
-    data: cachedPoliciesPayload,
-    loading: policiesLoading,
-    error: policiesError,
-  } = useCachedAsync<{ items: Policy[]; meta: { total: number; per_page: number; current_page: number; last_page: number } }>(
-    policiesKey,
-    async () => {
+  const loadPolicies = async () => {
+    setLoading(true)
+    try {
+      // No safe global cache for filtered/paginated policies without overcomplicating.
+      // Keep existing behavior for UI correctness.
       const res = await listPolicies({
-        per_page: perPage,
+        per_page: 10,
         page,
         search: search.trim() || undefined,
         department_id: departmentId || undefined,
         visibility: visibility || undefined,
         status: status || undefined,
       })
-      return {
-        items: res.data.data.items,
-        meta: res.data.data.meta,
-      }
-    },
-    { staleTimeMs: 30_000, returnStaleImmediately: true },
-  )
-
-  useEffect(() => {
-    // Keep existing UI state semantics, but never blank cached data.
-    if (cachedDepartments) setDepartments(cachedDepartments)
-  }, [cachedDepartments])
-
-  useEffect(() => {
-    if (cachedPoliciesPayload) {
-      setPolicies(cachedPoliciesPayload.items)
-      setMeta(cachedPoliciesPayload.meta)
+      setPolicies(res.data.data.items)
+      setMeta(res.data.data.meta)
+      setState((prev) => ({
+        ...prev,
+        adminPolicies: {
+          items: res.data.data.items,
+          meta: res.data.data.meta,
+        },
+      }))
+    } catch {
+      setError('Unable to load policies.')
+    } finally {
+      setLoading(false)
     }
-  }, [cachedPoliciesPayload])
+  }
+
 
   useEffect(() => {
-    // Only show skeleton/empty error if we truly have no cached payload yet.
-    const nextLoading = Boolean((policiesLoading || departmentsLoading) && !cachedPoliciesPayload)
-    setLoading(nextLoading)
-    setError(policiesError ? 'Unable to load policies.' : departmentsError ? 'Unable to load departments.' : null)
-  }, [policiesLoading, departmentsLoading, cachedPoliciesPayload, policiesError, departmentsError])
+    loadDepartments()
+  }, [])
 
+  useEffect(() => {
+    loadPolicies()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, search, departmentId, visibility, status])
 
-  // Shared cache (DataCacheContext + useCachedAsync) will be used instead of any window-based caching.
+  
+
 
 
 

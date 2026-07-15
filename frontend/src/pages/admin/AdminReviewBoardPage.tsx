@@ -1,34 +1,47 @@
 import { useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
-import { Badge } from '../../components/ui/Badge'
 import { listApprovals, ApprovalItem } from '../../services/api'
 import { decideApproval } from '../../services/approvalsApi'
 import { useToast } from '../../hooks/useToast'
 import AdminReviewApprovalCard from './AdminReviewApprovalCard'
-
+import { useAppData } from '../../context/AppDataContext'
 
 export default function AdminReviewBoardPage() {
   const { show } = useToast()
-  const [items, setItems] = useState<ApprovalItem[]>([])
-  const [loading, setLoading] = useState(true)
+  const { state: appData, setState } = useAppData()
+
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const items = appData.adminReviewBoard?.items ?? []
+  const hasData = Boolean(appData.adminReviewBoard)
 
   useEffect(() => {
+    let cancelled = false
+
     async function load() {
+      if (hasData) return
       setLoading(true)
       try {
         const response = await listApprovals({ per_page: 20, status: 'Pending' })
-        setItems(response.data.data.items)
-      } catch (err) {
+        if (cancelled) return
+        setState((prev) => ({
+          ...prev,
+          adminReviewBoard: { items: response.data.data.items },
+        }))
+      } catch {
+        if (cancelled) return
         setError('Unable to load review board.')
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
 
     load()
-  }, [])
+    return () => {
+      cancelled = true
+    }
+  }, [hasData, setState])
 
   return (
     <AppLayout>
@@ -60,13 +73,31 @@ export default function AdminReviewBoardPage() {
 
                   try {
                     await decideApproval(approval.id, { decision, comments })
-                    show({ tone: 'success', title: 'Decision saved', message: decision === 'Approved' ? 'Policy approved.' : 'Policy rejected.' })
+                    show({
+                      tone: 'success',
+                      title: 'Decision saved',
+                      message:
+                        decision === 'Approved'
+                          ? 'Policy approved.'
+                          : 'Policy rejected.',
+                    })
 
-                    // Refresh board automatically
-                    const refreshed = await listApprovals({ per_page: 20, status: 'Pending' })
-                    setItems(refreshed.data.data.items)
+                    // Update context immediately; do not refetch.
+                    setState((prev) => {
+                      const current = prev.adminReviewBoard?.items ?? []
+                      return {
+                        ...prev,
+                        adminReviewBoard: {
+                          items: current.filter((i) => i.id !== approval.id),
+                        },
+                      }
+                    })
                   } catch {
-                    show({ tone: 'error', title: 'Unable to save decision', message: 'Please try again.' })
+                    show({
+                      tone: 'error',
+                      title: 'Unable to save decision',
+                      message: 'Please try again.',
+                    })
                   }
                 }}
               />
@@ -78,3 +109,4 @@ export default function AdminReviewBoardPage() {
     </AppLayout>
   )
 }
+

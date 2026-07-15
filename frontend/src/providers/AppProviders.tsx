@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { AuthProvider } from '../context/AuthContext'
 import { ToastProvider } from '../hooks/useToast'
-
-
-
-
-
-
-
-
-
-import { DataCacheProvider } from '../context/DataCacheContext'
+import { AppDataProvider } from '../context/AppDataContext'
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
+
   const [hydrated, setHydrated] = useState(false)
+
 
   // Delay hydration slightly to avoid localStorage mismatches during SSR-style renders.
   useEffect(() => {
@@ -26,7 +19,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
       <AuthProvider>
-        <DataCacheProvider>{children}</DataCacheProvider>
+        <AppDataProvider>{children}</AppDataProvider>
       </AuthProvider>
     </ToastProvider>
   )

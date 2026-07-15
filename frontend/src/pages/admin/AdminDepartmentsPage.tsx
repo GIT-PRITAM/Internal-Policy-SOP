@@ -2,14 +2,21 @@ import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
 import AdminPageContainer from '../../components/admin/AdminPageContainer'
 
+import { useAppData } from '../../context/AppDataContext'
+
 import { Badge } from '../../components/ui/Badge'
+
 import { EmptyState } from '../../components/ui/EmptyState'
 import { createDepartment, deleteDepartment, listDepartments, updateDepartment, Department } from '../../services/api'
 import { SkeletonDepartmentList } from '../../components/skeletons/EnterpriseSkeletons'
 
 export default function AdminDepartmentsPage() {
+  const { state: appData, setState } = useAppData()
+  const cached = appData.adminDepartments
+
   const [departments, setDepartments] = useState<Department[]>([])
   const [loading, setLoading] = useState(true)
+
   const [error, setError] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -18,10 +25,19 @@ export default function AdminDepartmentsPage() {
   const [saving, setSaving] = useState(false)
 
   const loadDepartments = async () => {
+    // If we already have cached data, avoid re-fetching.
+    if (cached) {
+      setDepartments(cached)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     try {
       const res = await listDepartments({ per_page: 100 })
-      setDepartments(res.data.data.items)
+      const items = res.data.data.items
+      setDepartments(items)
+      setState((prev) => ({ ...prev, adminDepartments: items }))
     } catch (err) {
       setError('Unable to load departments.')
     } finally {
@@ -31,7 +47,14 @@ export default function AdminDepartmentsPage() {
 
   useEffect(() => {
     loadDepartments()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!cached) return
+    setDepartments(cached)
+  }, [cached])
+
 
   const resetForm = () => {
     setName('')

@@ -5,13 +5,19 @@ import { PolicyCard } from '../../components/widgets/PolicyCard'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Policy, Department, listPolicies, listDepartments, PaginatedResponse } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
+import { useAppData } from '../../context/AppDataContext'
+
 
 export default function EmployeePoliciesPage() {
   const navigate = useNavigate()
   const { show } = useToast()
 
+  const { state: appData, setState } = useAppData()
+  const cached = appData.employeePolicies
+
   const [policies, setPolicies] = useState<Policy[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
+
 
   const [page, setPage] = useState(1)
   const [perPage] = useState(6)
@@ -24,6 +30,8 @@ export default function EmployeePoliciesPage() {
   useEffect(() => {
     async function boot() {
       try {
+        // department list is used only for label mapping; if policy list is cached,
+        // we still fetch departments once to keep display correct.
         const [deptRes] = await Promise.all([listDepartments({ per_page: 100 })])
         setDepartments(deptRes.data.data.items)
       } catch {
@@ -33,15 +41,34 @@ export default function EmployeePoliciesPage() {
     boot()
   }, [])
 
+
   useEffect(() => {
     async function load() {
+      // If we already have cached policies, do not refetch on revisit.
+      if (cached && page === 1) {
+        setPolicies(cached.items)
+        setMeta(cached.meta)
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
       try {
         const res = await listPolicies({ page, per_page: perPage })
-        const payload = res.data.data
-        setPolicies((payload as PaginatedResponse<Policy>).items)
-        setMeta((payload as PaginatedResponse<Policy>).meta)
+        const payload = res.data.data as PaginatedResponse<Policy>
+        setPolicies(payload.items)
+        setMeta(payload.meta)
+
+        if (page === 1) {
+          setState((prev) => ({
+            ...prev,
+            employeePolicies: {
+              items: payload.items,
+              meta: payload.meta,
+            },
+          }))
+        }
       } catch {
         setError('Unable to load policies.')
         show({ tone: 'error', title: 'Load failed', message: 'Unable to fetch policies from server.' })
@@ -50,7 +77,8 @@ export default function EmployeePoliciesPage() {
       }
     }
     load()
-  }, [page, perPage, show])
+  }, [page, perPage, show, cached, setState])
+
 
   return (
     <AppLayout>

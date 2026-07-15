@@ -6,14 +6,20 @@ import { EmptyState } from '../../components/ui/EmptyState'
 import { Skeleton } from '../../components/ui/Skeleton'
 import { listPendingAcknowledgements, acknowledgePolicy, type AcknowledgementPolicyItem, type AcknowledgementsMeta } from '../../services/acknowledgementsApi'
 import { useToast } from '../../hooks/useToast'
+import { useAppData } from '../../context/AppDataContext'
+
 
 export default function EmployeePendingAcknowledgementsPage() {
   const navigate = useNavigate()
   const { show } = useToast()
 
+  const { state: appData, setState } = useAppData()
+  const cached = appData.employeeAcknowledgementsPending
+
   const [items, setItems] = useState<AcknowledgementPolicyItem[]>([])
   const [meta, setMeta] = useState<AcknowledgementsMeta | null>(null)
   const [page, setPage] = useState(1)
+
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [acknowledgingIds, setAcknowledgingIds] = useState<Set<number>>(new Set())
@@ -23,6 +29,14 @@ export default function EmployeePendingAcknowledgementsPage() {
   useEffect(() => {
     let cancelled = false
     async function load() {
+      // If we already have cached data for first page, do not refetch.
+      if (cached && page === 1) {
+        setItems(cached.items)
+        setMeta(cached.meta)
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
       try {
@@ -32,6 +46,16 @@ export default function EmployeePendingAcknowledgementsPage() {
         const nextItems: AcknowledgementPolicyItem[] = Array.isArray(data.data) ? data.data : (data.data as any)?.items ?? []
         setItems(nextItems)
         setMeta(data.meta ?? null)
+
+        if (page === 1) {
+          setState((prev) => ({
+            ...prev,
+            employeeAcknowledgementsPending: {
+              items: nextItems,
+              meta: data.meta,
+            },
+          }))
+        }
       } catch {
         if (!cancelled) setError('Unable to load pending acknowledgements.')
       } finally {
@@ -40,7 +64,8 @@ export default function EmployeePendingAcknowledgementsPage() {
     }
     load()
     return () => { cancelled = true }
-  }, [page])
+  }, [page, cached, setState])
+
 
   const handleAcknowledge = async (policyId: number) => {
     setAcknowledgingIds((prev) => new Set(prev).add(policyId))

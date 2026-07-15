@@ -15,27 +15,53 @@ import {
   type EmployeeDashboardResponse,
 } from "../../services/dashboardApi";
 import { NotificationsPanel } from "../../components/sections/NotificationsPanel";
-import { useCachedAsync } from "../../hooks/useCachedAsync";
+import { useAppData } from "../../context/AppDataContext";
+
 
 export default function EmployeeDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [dashboard, setDashboard] = useState<EmployeeDashboardResponse | null>(null);
 
-  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<EmployeeDashboardResponse>(
-    'dashboard:employee',
-    async () => {
-      const res = await getEmployeeDashboard();
-      return res.data.data;
-    },
-    { staleTimeMs: 60_000, returnStaleImmediately: true },
-  )
+  const { state: appData, setState } = useAppData()
+  const cachedDashboard = appData.employeeDashboard
+  const hasData = Boolean(appData.employeeDashboard)
 
   useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      if (hasData) return
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await getEmployeeDashboard()
+        if (cancelled) return
+        setState((prev) => ({
+          ...prev,
+          employeeDashboard: res.data.data,
+        }))
+      } catch {
+        if (cancelled) return
+        setError('Unable to load dashboard data. Please try again.')
+      } finally {
+        if (cancelled) return
+        setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [hasData, setState])
+
+  useEffect(() => {
+    if (!cachedDashboard) return
     setDashboard(cachedDashboard)
-    setLoading(cachedLoading)
-    setError(cachedError)
-  }, [cachedDashboard, cachedLoading, cachedError])
+  }, [cachedDashboard])
+
 
 
   const stats = dashboard?.stats ?? [];

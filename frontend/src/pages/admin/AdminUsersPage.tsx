@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
+import { useAppData } from '../../context/AppDataContext'
+
 import { Badge } from '../../components/ui/Badge'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { createUser, deleteUser, listDepartments, listUsers, updateUser } from '../../services/api'
@@ -31,8 +33,12 @@ const roleLabelFromId = (roleId: number | null | undefined) => {
 export default function AdminUsersPage() {
   const toast = useToast()
 
+  const { state: appData, setState } = useAppData()
+  const cached = appData.adminUsers
+
   const [items, setItems] = useState<User[]>([])
   const [meta, setMeta] = useState<{ total: number; per_page: number; current_page: number; last_page: number } | null>(null)
+
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)

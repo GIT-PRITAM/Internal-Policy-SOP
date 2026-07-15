@@ -20,10 +20,11 @@ import { PolicyCard } from '../../components/widgets/PolicyCard'
 import type { AdminDashboardResponse } from '../../services/dashboardApi'
 import { getAdminDashboard } from '../../services/dashboardApi'
 import { useNavigate } from 'react-router-dom'
-import { useCachedAsync } from '../../hooks/useCachedAsync'
+import { useAppData } from '../../context/AppDataContext'
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend)
+
 
 export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true)
@@ -32,20 +33,45 @@ export default function AdminAnalyticsPage() {
 
   const navigate = useNavigate()
 
-  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<AdminDashboardResponse>(
-    'dashboard:admin',
-    async () => {
-      const res = await getAdminDashboard()
-      return res.data.data
-    },
-    { staleTimeMs: 60_000, returnStaleImmediately: true },
-  )
+  const { state: appData, setState } = useAppData()
+  const cachedDashboard = appData.adminAnalytics
+  const hasData = Boolean(appData.adminAnalytics)
 
   useEffect(() => {
+    let cancelled = false
+
+    async function load() {
+      if (hasData) return
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await getAdminDashboard()
+        if (cancelled) return
+        setState((prev) => ({
+          ...prev,
+          adminAnalytics: res.data.data,
+        }))
+      } catch {
+        if (cancelled) return
+        setError('Unable to load analytics data.')
+      } finally {
+        if (cancelled) return
+        setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [hasData, setState])
+
+  useEffect(() => {
+    if (!cachedDashboard) return
     setDashboard(cachedDashboard)
-    setLoading(cachedLoading)
-    setError(cachedError)
-  }, [cachedDashboard, cachedLoading, cachedError])
+  }, [cachedDashboard])
+
 
   const stats = dashboard?.stats ?? []
 

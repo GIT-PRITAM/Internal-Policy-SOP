@@ -17,13 +17,14 @@ import {
 
 import { PolicyCard } from "../../components/widgets/PolicyCard";
 import { Badge } from "../../components/ui/Badge";
-import { useCachedAsync } from "../../hooks/useCachedAsync";
+import { useAppData } from "../../context/AppDataContext";
 
 import {
   downloadCsvFile,
   policiesToCsv,
   listPolicies,
 } from "../../services/api";
+
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 export default function AdminDashboardPage() {
@@ -34,23 +35,47 @@ export default function AdminDashboardPage() {
   const [dashboard, setDashboard] = useState<AdminDashboardResponse | null>(null)
 
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
-  const { data: cachedDashboard, loading: cachedLoading, error: cachedError } = useCachedAsync<AdminDashboardResponse>(
-    'dashboard:admin',
-    async () => {
-      const res = await getAdminDashboard();
-      return res.data.data;
-    },
-    { staleTimeMs: 60_000, returnStaleImmediately: true },
-  )
+  const { state: appData, setState } = useAppData()
+  const cachedDashboard = appData.adminDashboard
+  const hasData = Boolean(appData.adminDashboard)
 
   useEffect(() => {
-    // Keep existing UI state wiring (loading/error) minimal.
+    let cancelled = false
+
+    async function load() {
+      if (hasData) return
+      setLoading(true)
+      setError(null)
+      try {
+        const res = await getAdminDashboard()
+        if (cancelled) return
+        setState((prev) => ({
+          ...prev,
+          adminDashboard: res.data.data,
+        }))
+      } catch {
+        if (cancelled) return
+        setError('Unable to load dashboard data. Please try again.')
+      } finally {
+        if (cancelled) return
+        setLoading(false)
+      }
+    }
+
+    load()
+
+    return () => {
+      cancelled = true
+    }
+  }, [hasData, setState])
+
+  useEffect(() => {
+    if (!cachedDashboard) return
     setDashboard(cachedDashboard)
-    setLoading(cachedLoading)
-    setError(cachedError)
-  }, [cachedDashboard, cachedLoading, cachedError])
+  }, [cachedDashboard])
+
 
   const stats = dashboard?.stats ?? []
   const departmentAnalytics = dashboard?.departmentAnalytics ?? []
