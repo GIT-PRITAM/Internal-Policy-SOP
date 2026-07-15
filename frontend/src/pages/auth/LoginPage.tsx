@@ -36,18 +36,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="h-[100vh] overflow-hidden">
       {/* EXACT SAME premium background as Landing */}
       <EnterpriseBackground />
 
       <div className="relative">
         <AppNavbar />
 
-        <main className="max-w-6xl mx-auto px-4 sm:px-6 pb-16 pt-10">
-          <div className="grid place-items-center min-h-[calc(100vh-96px-40px)]">
+        <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+          <div className="grid place-items-center h-[calc(100vh-104px)]">
             <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-7 shadow-soft backdrop-blur-md">
 
-              <div className="mb-6">
+              <div className="mb-5">
 
                 <div className="inline-flex items-center gap-2 rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1 text-xs text-violet-200 shadow-[0_0_30px_rgba(139,92,246,0.12)]">
                   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-violet-300/30 bg-violet-500/10">

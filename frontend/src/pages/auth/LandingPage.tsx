@@ -24,7 +24,7 @@ export default function LandingPage() {
   const nav = useNavigate();
 
   return (
-    <div className="min-h-screen text-slate-100">
+    <div className="h-[100vh] overflow-hidden text-slate-100">
       {/* Premium layered background (shared with Login) */}
       <div className="relative">
         <EnterpriseBackground />
@@ -77,13 +77,13 @@ export default function LandingPage() {
           </div>
         </header>
 
-        <main className="mx-auto max-w-6xl px-4 pb-12 pt-10">
+        <main className="mx-auto max-w-6xl px-4 pt-6 pb-4">
           {/* Hero */}
           <section className="relative">
             <div className="mx-auto max-w-6xl">
-              <div
-                className="grid gap-24 lg:grid-cols-12 items-center"
-                style={{ minHeight: "70vh" }}
+                <div
+                className="grid gap-16 lg:grid-cols-12 items-center"
+                style={{ minHeight: "60vh" }}
               >
                 {/* LEFT */}
                 <div className="lg:col-span-6">
@@ -355,7 +355,7 @@ export default function LandingPage() {
           {/* Feature cards row */}
 
           {/* Security strip */}
-          <section className="mt-6 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+          <section className="mt-3 rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
             <div className="flex items-center justify-between gap-4 flex-col sm:flex-row">
               <div className="flex items-center gap-3">
                 <IconBadge
@@ -381,7 +381,7 @@ export default function LandingPage() {
             </div>
           </section>
 
-          <footer className="mt-10 pb-6">
+          <footer className="mt-6 pb-0">
             <div className="text-xs text-slate-500">
               © {new Date().getFullYear()} Corporate Policy & SOP Portal.
               Unauthorized access is prohibited. Version 1.0.0
