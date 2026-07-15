@@ -21,6 +21,8 @@ import AdminCreatePolicyPage from './pages/admin/AdminCreatePolicyPage'
 import AdminEditPolicyPage from './pages/admin/AdminEditPolicyPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
 import AdminProfilePage from './pages/admin/AdminProfilePage'
+import AdminAnalyticsPage from './pages/admin/AdminAnalyticsPage'
+
 
 export default function App() {
   const { role } = useAuth()
@@ -69,7 +71,9 @@ export default function App() {
         <Route path="policies/:id/edit" element={<AdminEditPolicyPage />} />
         <Route path="users" element={<AdminUsersPage />} />
         <Route path="review-board" element={<AdminReviewBoardPage />} />
+        <Route path="analytics" element={<AdminAnalyticsPage />} />
         <Route path="profile" element={<AdminProfilePage />} />
+
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
