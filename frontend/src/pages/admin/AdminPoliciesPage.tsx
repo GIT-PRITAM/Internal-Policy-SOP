@@ -23,6 +23,7 @@ export default function AdminPoliciesPage() {
   const navigate = useNavigate()
 
   const { state: appData, setState } = useAppData()
+  const cached = appData.adminPolicies
 
   const [policies, setPolicies] = useState<Policy[]>([])
   const [departments, setDepartments] = useState<Department[]>([])
@@ -38,8 +39,6 @@ export default function AdminPoliciesPage() {
 
 
   const loadDepartments = async () => {
-    // This page still performs list calls with UI filters.
-    // Departments are cached globally for the session.
     if (appData.adminDepartments) {
       setDepartments(appData.adminDepartments)
       return
@@ -52,10 +51,16 @@ export default function AdminPoliciesPage() {
 
 
   const loadPolicies = async () => {
+    // Use cached data on first visit (page=1, default filters)
+    if (cached && page === 1 && !search && !departmentId && !visibility && !status) {
+      setPolicies(cached.items)
+      setMeta(cached.meta)
+      setLoading(false)
+      return
+    }
+
     setLoading(true)
     try {
-      // No safe global cache for filtered/paginated policies without overcomplicating.
-      // Keep existing behavior for UI correctness.
       const res = await listPolicies({
         per_page: 10,
         page,
@@ -94,7 +99,6 @@ export default function AdminPoliciesPage() {
 
 
 
-
   const departmentMap = useMemo(
     () => Object.fromEntries(departments.map((dept) => [dept.id, dept.name])),
     [departments],
@@ -105,9 +109,6 @@ export default function AdminPoliciesPage() {
     setLoading(true)
     try {
       await deletePolicy(policyId)
-      // Invalidate relevant caches and let the cached async refetch.
-      // (No window-based caching.)
-      // We keep UI logic intact: after delete, we rely on cache invalidation.
     } catch {
       setError('Unable to delete policy.')
     } finally {
@@ -352,4 +353,3 @@ export default function AdminPoliciesPage() {
     </AppLayout>
   )
 }
-

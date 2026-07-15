@@ -25,37 +25,33 @@ export default function EmployeeDashboardPage() {
 
   const { state: appData, setState } = useAppData()
   const cachedDashboard = appData.employeeDashboard
-  const hasData = Boolean(appData.employeeDashboard)
+
+  const loadDashboard = async () => {
+    if (cachedDashboard) {
+      setDashboard(cachedDashboard)
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await getEmployeeDashboard()
+      setState((prev) => ({
+        ...prev,
+        employeeDashboard: res.data.data,
+      }))
+    } catch {
+      setError('Unable to load dashboard data. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      if (hasData) return
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await getEmployeeDashboard()
-        if (cancelled) return
-        setState((prev) => ({
-          ...prev,
-          employeeDashboard: res.data.data,
-        }))
-      } catch {
-        if (cancelled) return
-        setError('Unable to load dashboard data. Please try again.')
-      } finally {
-        if (cancelled) return
-        setLoading(false)
-      }
-    }
-
-    load()
-
-    return () => {
-      cancelled = true
-    }
-  }, [hasData, setState])
+    loadDashboard()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!cachedDashboard) return
@@ -256,11 +252,6 @@ export default function EmployeeDashboardPage() {
                 )}
               </div>
             </div>
-
-            {/* Notifications */}
-            {/* <div className="rounded-2xl border border-white/10 bg-white/5 p-0 shadow-soft overflow-hidden">
-              <NotificationsPanel />
-            </div> */}
           </div>
 
          

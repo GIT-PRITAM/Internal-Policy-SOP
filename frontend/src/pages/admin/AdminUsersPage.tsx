@@ -88,6 +88,13 @@ export default function AdminUsersPage() {
   }
 
   async function loadUsers() {
+    // Use cached data on first visit (page=1, no search)
+    if (cached && page === 1 && !search) {
+      setItems(cached.items)
+      setMeta(cached.meta)
+      return
+    }
+
     setLoading(true)
     setError(null)
     try {
@@ -100,6 +107,17 @@ export default function AdminUsersPage() {
 
       setItems(nextItems)
       setMeta(nextMeta)
+
+      // Store in AppDataContext when on page 1 without search
+      if (page === 1 && !search) {
+        setState((prev) => ({
+          ...prev,
+          adminUsers: {
+            items: nextItems,
+            meta: nextMeta,
+          },
+        }))
+      }
     } catch (e: any) {
       setError(e?.response?.data?.message ?? 'Failed to load users')
       toast.show({ tone: 'error', title: 'Users load failed', message: 'Could not load users.' })
@@ -191,7 +209,6 @@ export default function AdminUsersPage() {
     try {
       await deleteUser(id)
       toast.show({ tone: 'success', title: 'User deleted' })
-      // If last item on page deleted, ensure we don't end on empty page beyond last_page.
       await loadUsers()
     } catch (e: any) {
       toast.show({ tone: 'error', title: 'Delete failed', message: e?.response?.data?.message ?? 'Could not delete user.' })
@@ -442,5 +459,3 @@ export default function AdminUsersPage() {
     </AppLayout>
   )
 }
-
-

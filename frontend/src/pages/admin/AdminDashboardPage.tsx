@@ -39,37 +39,33 @@ export default function AdminDashboardPage() {
 
   const { state: appData, setState } = useAppData()
   const cachedDashboard = appData.adminDashboard
-  const hasData = Boolean(appData.adminDashboard)
+
+  const loadDashboard = async () => {
+    if (cachedDashboard) {
+      setDashboard(cachedDashboard)
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await getAdminDashboard()
+      setState((prev) => ({
+        ...prev,
+        adminDashboard: res.data.data,
+      }))
+    } catch {
+      setError('Unable to load dashboard data. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      if (hasData) return
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await getAdminDashboard()
-        if (cancelled) return
-        setState((prev) => ({
-          ...prev,
-          adminDashboard: res.data.data,
-        }))
-      } catch {
-        if (cancelled) return
-        setError('Unable to load dashboard data. Please try again.')
-      } finally {
-        if (cancelled) return
-        setLoading(false)
-      }
-    }
-
-    load()
-
-    return () => {
-      cancelled = true
-    }
-  }, [hasData, setState])
+    loadDashboard()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!cachedDashboard) return
@@ -115,14 +111,6 @@ export default function AdminDashboardPage() {
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-              {/* <button
-                type="button"
-                onClick={handleExport}
-                disabled={loading}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 transition hover:bg-white/10 disabled:opacity-60"
-              >
-                Export report
-              </button> */}
               <button
                 type="button"
                 onClick={() => navigate("/admin/policies/new")}
@@ -130,13 +118,6 @@ export default function AdminDashboardPage() {
               >
                 New policy
               </button>
-              {/* <button
-                type="button"
-                onClick={() => navigate('/admin/review-board')}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-100 transition hover:bg-white/10"
-              >
-                Review board
-              </button> */}
               <button
                 type="button"
                 onClick={handleExport}
@@ -236,35 +217,6 @@ export default function AdminDashboardPage() {
               {loading ? <SkeletonChartBlock /> : <ChartCard chart={chart} />}
             </div>
           </div>
-          {/* 
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <h2 className="text-xl font-semibold text-slate-100">Pending reviews</h2>
-                  <p className="text-sm text-slate-400">Policies awaiting approvals</p>
-                </div>
-                <Badge tone="amber">{pendingReviews.length} open</Badge>
-              </div>
-              <div className="mt-5 space-y-3">
-                {pendingReviews.length === 0 ? (
-                  <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-4 text-slate-300">No pending approvals at the moment.</div>
-                ) : (
-                  pendingReviews.map((item) => (
-                    <div key={item.id} className="rounded-3xl border border-white/10 bg-slate-950/60 p-4">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="font-semibold text-slate-100">Policy #{item.policy_document_id}</p>
-                          <p className="text-sm text-slate-400">Approver: {item.approver?.name ?? item.approver_user_id}</p>
-                        </div>
-                        <Badge tone="amber">{item.status}</Badge>
-                      </div>
-                      <div className="mt-3 text-sm text-slate-500">{item.comments ?? 'Awaiting reviewer comments.'}</div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div> */}
           <div className="space-y-4">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-soft">
               <div className="flex items-center justify-between gap-4">

@@ -6,10 +6,13 @@ import { SearchBar } from '../../components/sections/SearchBar'
 import { EmptyState } from '../../components/ui/EmptyState'
 import { Policy, Department, listPolicies, listDepartments, PaginatedResponse } from '../../services/api'
 import { useToast } from '../../hooks/useToast'
+import { useAppData } from '../../context/AppDataContext'
 
 export default function EmployeeSearchPage() {
   const navigate = useNavigate()
   const { show } = useToast()
+
+  const { state: appData, setState } = useAppData()
 
   const [q, setQ] = useState('')
   const [page, setPage] = useState(1)
@@ -25,20 +28,35 @@ export default function EmployeeSearchPage() {
 
   useEffect(() => {
     async function loadDeps() {
+      if (appData.adminDepartments) {
+        setDepartments(appData.adminDepartments)
+        return
+      }
+
       try {
         const res = await listDepartments({ per_page: 100 })
-        setDepartments(res.data.data.items)
+        const items = res.data.data.items
+        setDepartments(items)
+        setState((prev) => ({ ...prev, adminDepartments: items }))
       } catch {
         // non-blocking
       }
     }
     loadDeps()
-  }, [])
+  }, [appData.adminDepartments, setState])
 
   useEffect(() => {
     let cancelled = false
 
     async function run() {
+      // Use cached employeePolicies on initial visit (page=1, no search)
+      if (page === 1 && !q && appData.employeePolicies) {
+        setPolicies(appData.employeePolicies.items)
+        setMeta(appData.employeePolicies.meta)
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
       try {
@@ -50,8 +68,21 @@ export default function EmployeeSearchPage() {
         if (cancelled) return
 
         const payload = res.data.data
-        setPolicies((payload as PaginatedResponse<Policy>).items)
-        setMeta((payload as PaginatedResponse<Policy>).meta)
+        const items = (payload as PaginatedResponse<Policy>).items
+        const nextMeta = (payload as PaginatedResponse<Policy>).meta
+        setPolicies(items)
+        setMeta(nextMeta)
+
+        // Cache in AppDataContext when on page 1 without search
+        if (page === 1 && !q) {
+          setState((prev) => ({
+            ...prev,
+            employeePolicies: {
+              items,
+              meta: nextMeta,
+            },
+          }))
+        }
       } catch {
         if (cancelled) return
         setError('Unable to search policies.')
@@ -65,7 +96,7 @@ export default function EmployeeSearchPage() {
     return () => {
       cancelled = true
     }
-  }, [q, page, perPage, show])
+  }, [q, page, perPage, show, appData.employeePolicies, setState])
 
   return (
     <AppLayout>
@@ -137,5 +168,3 @@ export default function EmployeeSearchPage() {
     </AppLayout>
   )
 }
-
-

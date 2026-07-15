@@ -35,37 +35,33 @@ export default function AdminAnalyticsPage() {
 
   const { state: appData, setState } = useAppData()
   const cachedDashboard = appData.adminAnalytics
-  const hasData = Boolean(appData.adminAnalytics)
+
+  const loadAnalytics = async () => {
+    if (cachedDashboard) {
+      setDashboard(cachedDashboard)
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await getAdminDashboard()
+      setState((prev) => ({
+        ...prev,
+        adminAnalytics: res.data.data,
+      }))
+    } catch {
+      setError('Unable to load analytics data.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    let cancelled = false
-
-    async function load() {
-      if (hasData) return
-      setLoading(true)
-      setError(null)
-      try {
-        const res = await getAdminDashboard()
-        if (cancelled) return
-        setState((prev) => ({
-          ...prev,
-          adminAnalytics: res.data.data,
-        }))
-      } catch {
-        if (cancelled) return
-        setError('Unable to load analytics data.')
-      } finally {
-        if (cancelled) return
-        setLoading(false)
-      }
-    }
-
-    load()
-
-    return () => {
-      cancelled = true
-    }
-  }, [hasData, setState])
+    loadAnalytics()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (!cachedDashboard) return
@@ -317,4 +313,3 @@ export default function AdminAnalyticsPage() {
     </AppLayout>
   )
 }
-
