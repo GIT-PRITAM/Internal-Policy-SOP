@@ -7,6 +7,7 @@ use App\Http\Requests\ListBookmarksRequest;
 use App\Http\Resources\PolicyDocumentResource;
 use App\Services\BookmarkService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class BookmarkController extends Controller
 {
@@ -38,7 +39,7 @@ class BookmarkController extends Controller
     /**
      * Remove a bookmark.
      */
-    public function remove(AddBookmarkRequest $request): JsonResponse
+    public function remove(Request $request): JsonResponse
     {
         $this->service->remove(
             userId: $request->user()->id,
@@ -76,4 +77,3 @@ class BookmarkController extends Controller
         ]);
     }
 }
-

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout'
-import { listApprovals, ApprovalItem } from '../../services/api'
+import { listApprovals } from '../../services/api'
 import { decideApproval } from '../../services/approvalsApi'
 import { useToast } from '../../hooks/useToast'
 import AdminReviewApprovalCard from './AdminReviewApprovalCard'
@@ -11,6 +11,7 @@ export default function AdminReviewBoardPage() {
   const { show } = useToast()
   const { state: appData, setState } = useAppData()
   const { user } = useAuth()
+
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -62,49 +63,55 @@ export default function AdminReviewBoardPage() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-slate-300">No pending approvals were found.</div>
         ) : (
           <div className="space-y-4">
-            {items.map((approval) => (
-              <AdminReviewApprovalCard
-                key={approval.id}
-                approval={approval}
-                onDecide={async (decision, comments) => {
-                  const ok = window.confirm(
-                    decision === 'Approved'
-                      ? 'Approve this policy? This will update its status to Approved.'
-                      : 'Reject this policy? This will update its status back to Draft.'
-                  )
-                  if (!ok) return
+            {items.map((approval) => {
+              const isApprover = Boolean(currentUserId) && approval.approver_user_id === currentUserId
 
-                  try {
-                    await decideApproval(approval.id, { decision, comments })
-                    show({
-                      tone: 'success',
-                      title: 'Decision saved',
-                      message:
-                        decision === 'Approved'
-                          ? 'Policy approved.'
-                          : 'Policy rejected.',
-                    })
+              return (
+                <AdminReviewApprovalCard
+                  key={approval.id}
+                  approval={approval}
+                  isApprover={isApprover}
+                  onDecide={async (decision, comments) => {
+                    const ok = window.confirm(
+                      decision === 'Approved'
+                        ? 'Approve this policy? This will update its status to Approved.'
+                        : 'Reject this policy? This will update its status back to Draft.'
+                    )
+                    if (!ok) return
 
-                    // Update context immediately; do not refetch.
-                    setState((prev) => {
-                      const current = prev.adminReviewBoard?.items ?? []
-                      return {
-                        ...prev,
-                        adminReviewBoard: {
-                          items: current.filter((i) => i.id !== approval.id),
-                        },
-                      }
-                    })
-                  } catch {
-                    show({
-                      tone: 'error',
-                      title: 'Unable to save decision',
-                      message: 'Please try again.',
-                    })
-                  }
-                }}
-              />
-            ))}
+                    try {
+                      await decideApproval(approval.id, { decision, comments })
+                      show({
+                        tone: 'success',
+                        title: 'Decision saved',
+                        message:
+                          decision === 'Approved'
+                            ? 'Policy approved.'
+                            : 'Policy rejected.',
+                      })
+
+                      // Update context immediately; do not refetch.
+                      setState((prev) => {
+                        const current = prev.adminReviewBoard?.items ?? []
+                        return {
+                          ...prev,
+                          adminReviewBoard: {
+                            items: current.filter((i) => i.id !== approval.id),
+                          },
+                        }
+                      })
+                    } catch {
+                      show({
+                        tone: 'error',
+                        title: 'Unable to save decision',
+                        message: 'Please try again.',
+                      })
+                    }
+                  }}
+                />
+              )
+            })}
+
           </div>
         )}
 

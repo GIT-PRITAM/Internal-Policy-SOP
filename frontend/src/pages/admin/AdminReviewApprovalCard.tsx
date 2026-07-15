@@ -11,6 +11,7 @@ export default function AdminReviewApprovalCard({
   onDecide: (decision: 'Approved' | 'Rejected', comments: string | null) => Promise<void>
   isApprover: boolean
 }) {
+
   const [comments, setComments] = useState<string>(approval.comments ?? '')
   const [submitting, setSubmitting] = useState(false)
 
