@@ -26,8 +26,11 @@ export function useCachedAsync<T>(
   const { getCached, setCached } = useDataCache()
 
   const [data, setData] = useState<T | null>(null)
+  // loading indicates an in-progress request.
+  // Consumers should decide whether to show skeletons based on presence of cached data.
   const [loading, setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
+
 
   const mountedRef = useRef(false)
 
