@@ -41,7 +41,10 @@ export default function AdminReviewApprovalCard({
     <div className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 shadow-soft">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
-          <div className="text-lg font-semibold text-slate-100">Policy #{approval.policy_document_id}</div>
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <div className="text-2xl font-semibold text-slate-100 leading-tight">Policy #{approval.policy_document_id}</div>
+            <div className="text-lg font-semibold text-indigo-200/90">• {((approval as any).policy_document_title ?? (approval as any).policy_document?.title ?? 'Policy title')}</div>
+          </div>
           <div className="text-sm text-slate-400">Approver: {approval.approver?.name ?? `User #${approval.approver_user_id}`}</div>
           {!isApprover && approval.status === 'Pending' ? (
             <div className="text-xs text-amber-400 mt-1">You can comment but only the assigned approver can decide.</div>
@@ -73,7 +76,7 @@ export default function AdminReviewApprovalCard({
               type="button"
               onClick={() => handle('Approved')}
               disabled={!canAct || submitting}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-60"
+              className="rounded-2xl bg-emerald-500/15 px-5 py-2.5 text-sm font-semibold text-emerald-200 border border-emerald-400/20 transition hover:bg-emerald-500/25 disabled:opacity-60"
             >
               {submitting ? 'Approving…' : 'Approve'}
             </button>
@@ -81,7 +84,7 @@ export default function AdminReviewApprovalCard({
               type="button"
               onClick={() => handle('Rejected')}
               disabled={!canAct || submitting}
-              className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-60"
+              className="rounded-2xl bg-red-500/15 px-5 py-2.5 text-sm font-semibold text-red-200 border border-red-400/20 transition hover:bg-red-500/25 disabled:opacity-60"
             >
               {submitting ? 'Rejecting…' : 'Reject'}
             </button>
@@ -91,9 +94,9 @@ export default function AdminReviewApprovalCard({
             type="button"
             onClick={handleCommentOnly}
             disabled={submitting || !comments.trim()}
-            className="rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:opacity-60"
+            className="rounded-2xl bg-emerald-500/15 border border-emerald-400/20 px-5 py-2.5 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/25 disabled:opacity-60"
           >
-            {submitting ? 'Posting…' : 'Post Comment'}
+            {submitting ? 'Posting…' : 'Comment'}
           </button>
         )}
       </div>
